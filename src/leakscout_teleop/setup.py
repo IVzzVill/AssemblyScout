@@ -24,6 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'ps4_teleop = leakscout_teleop.ps4_teleop:main',
         ],
     },
 )

@@ -53,19 +53,21 @@ Se movieron los sticks y se presionaron los controles individualmente.
 
 ## Decisiones de control
 
-El stick izquierdo vertical controlará el avance y retroceso.
+R2 controla el avance mediante axes[5] y L2 controla el retroceso mediante axes[4]. Sus valores negativos se convierten en presiones positivas.
 
-El stick derecho horizontal controlará el giro.
+La velocidad lineal se calcula restando la presión de L2 a la de R2 y multiplicando el resultado por la velocidad máxima. Si ambos gatillos tienen la misma presión, la velocidad lineal es cero.
 
-R2 habilitará el movimiento cuando axes[5] sea menor que -0.5. Al soltar R2, se enviarán velocidades cero.
+El stick derecho horizontal, axes[2], controla el giro. Puede utilizarse al mismo tiempo que los gatillos o para girar en el lugar.
 
-El botón X se identificó como entrada digital y no tiene una acción asignada por ahora.
+Al soltar todos los controles se envían velocidades cero. También se envía cero si dejan de recibirse mensajes válidos durante más de 0.5 segundos.
 
-Los índices, las velocidades máximas y el umbral de R2 serán configurables para facilitar cambios durante las pruebas y la demostración en clase.
+El botón X se identificó en buttons[0] y no tiene una acción asignada.
+
+Los límites iniciales son 1.5 para velocidad lineal y 1.5 rad/s para velocidad angular. Los índices y límites son parámetros configurables.
 
 ## Estado actual
 
-Se comprobó la lectura del control y se creó la estructura inicial del paquete. El nodo de teleoperación y el launch se desarrollarán en las siguientes etapas.
+Se implementó el nodo ps4_teleop, que recibe sensor_msgs/msg/Joy en /joy y publica geometry_msgs/msg/Twist en /turtle1/cmd_vel.
 
 ## Fuente consultada
 
