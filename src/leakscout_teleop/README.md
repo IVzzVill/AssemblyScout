@@ -72,3 +72,10 @@ Se implementó el nodo ps4_teleop, que recibe sensor_msgs/msg/Joy en /joy y publ
 ## Fuente consultada
 
 [Documentación oficial del paquete joy](https://index.ros.org/p/joy/)
+
+
+## Evidencia en video
+
+Demostración de la teleoperación con el control PS4, la ejecución mediante launch y la comprobación del sistema en ROS 2.
+
+[Ver video de LeakScout con control PS4](https://drive.google.com/file/d/1dwj4O0xD4h5nkd6FfjZFCcKPgAALWCe_/view?usp=sharing)
