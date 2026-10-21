@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<robot name="leakscout">
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <mesh filename="package://robot_description/meshes/chasis.STL" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gris">
+        <color rgba="0.65 0.65 0.68 1" />
+      </material>
+    </visual>
+  </link>
+  <link name="wheel_left">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 -1.57079632679" />
+      <geometry>
+        <mesh filename="package://robot_description/meshes/rueda_izquierda.STL" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gris_left">
+        <color rgba="0.2 0.2 0.2 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="wheel_left_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="wheel_left" />
+    <origin xyz="-0.08904754 0 0.0165" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+  <link name="wheel_right">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 1.57079632679" />
+      <geometry>
+        <mesh filename="package://robot_description/meshes/rueda_derecha.STL" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gris_right">
+        <color rgba="0.2 0.2 0.2 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="wheel_right_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="wheel_right" />
+    <origin xyz="0.08904754 0 0.0165" rpy="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+</robot>
