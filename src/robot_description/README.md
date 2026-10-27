@@ -363,7 +363,7 @@ publicada en `/cmd_vel` determina la velocidad del control diferencial.
 
 ### Video de Gazebo
 
-Pendiente de agregar después de grabar la demostración final.
+[Ver video de la simulación y el control PS4 en Gazebo](https://drive.google.com/file/d/1QfQA-N8LC5lSrwg9HMMZ6WWUBn1PwXIo/view?usp=drive_link)
 
 ## Autor
 
