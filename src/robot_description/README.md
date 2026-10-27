@@ -46,6 +46,27 @@ Los archivos principales son:
 - `rviz/display.rviz`: configuración de RViz
 - `docs/grafo_comunicacion_gazebo.png`: evidencia de la comunicación ROS 2
 
+## Modificaciones realizadas al modelo
+
+Para integrar el ensamble de CAD con ROS 2, RViz y Gazebo se realizaron las
+siguientes modificaciones:
+
+| Modificación | Propósito |
+| --- | --- |
+| Escala de las mallas STL de `0.001` | Convertir las dimensiones exportadas en milímetros a metros sin alterar los archivos originales |
+| Transformación de los ejes del CAD | Hacer que X apunte al frente, Y a la izquierda y Z hacia arriba según la convención de ROS |
+| Separación del chasis y las ruedas | Representar las ruedas como enlaces independientes del chasis |
+| Articulaciones continuas para las ruedas | Permitir el giro ilimitado de ambas ruedas motrices |
+| Incorporación de masas y centros de masa | Representar las propiedades físicas obtenidas del ensamble de SolidWorks |
+| Transformación de las matrices de inercia | Expresar las inercias del CAD en los ejes y unidades utilizados por ROS |
+| Colisiones mediante primitivas simples | Reducir el costo de contacto y evitar inestabilidad causada por las mallas densas |
+| Incorporación de dos apoyos esféricos | Mantener estable el chasis sin duplicar su masa |
+| Plugin de control diferencial | Convertir `/cmd_vel` en movimiento de las ruedas y publicar odometría |
+| Publicación de estados articulares | Comunicar el movimiento de las ruedas a ROS 2 y RViz |
+
+Las secciones siguientes documentan las medidas, transformaciones y
+decisiones utilizadas para aplicar estas modificaciones.
+
 ## Preparación del modelo
 
 Las mallas se exportaron en milímetros. El URDF conserva los archivos sin
@@ -354,6 +375,26 @@ Una orden de velocidad permanece activa hasta recibir una nueva orden. En
 las pruebas manuales siempre se envió un mensaje de velocidad cero después
 de utilizar `timeout`. El nodo del mando realiza esta actualización de
 forma continua y también se detiene por pérdida de datos.
+
+### Parpadeo de una rueda en RViz
+
+Se observaron varias instancias de `robot_state_publisher`, publicadores de
+`/joint_states` y transformaciones simultáneas porque el launch se había
+iniciado más de una vez. Los datos competían entre sí y una rueda parecía
+parpadear. Se detuvieron las ejecuciones anteriores con `Ctrl+C` y se dejó
+activo un solo launch. La publicación volvió a ser estable.
+
+### Las ventanas de Gazebo y RViz se encimaban
+
+Gazebo y RViz se abrían correctamente, pero el gestor de ventanas no les
+asignaba posiciones separadas. Se agregó un script con `wmctrl` para colocar
+ambas aplicaciones en mitades opuestas del escritorio.
+
+En la sesión con Wayland, `wmctrl -d` no proporcionaba las dimensiones del
+área de trabajo. El script utiliza `xdpyinfo` y, como segunda alternativa,
+`xrandr` para obtener el tamaño disponible. Esto permite dividir una pantalla
+o colocar una aplicación en cada monitor cuando se utiliza un escritorio
+extendido.
 
 ## Modificación para la revisión en clase
 

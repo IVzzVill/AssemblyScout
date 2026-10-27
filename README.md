@@ -108,6 +108,23 @@ El brazo tendrá una función de observación, sin manipulación ni reparación 
 
 Cada paquete incluye su documentación con dependencias, comandos de ejecución, comprobaciones y evidencias. El workspace local se denomina `assemblyscout_ws`.
 
+## Documentación de entrega
+
+La documentación técnica solicitada se encuentra en los README de cada
+paquete y se conserva junto con el código correspondiente:
+
+| Contenido | Documento |
+| --- | --- |
+| Herramientas y dependencias utilizadas | [Modelo del robot, RViz y Gazebo](src/robot_description/README.md#herramientas-utilizadas) |
+| Modificaciones realizadas al modelo | [Modelo del robot, RViz y Gazebo](src/robot_description/README.md#modificaciones-realizadas-al-modelo) |
+| Arquitectura de comunicación | [Modelo del robot, RViz y Gazebo](src/robot_description/README.md#arquitectura-de-comunicación) |
+| Compilación y comandos de ejecución | [Modelo del robot, RViz y Gazebo](src/robot_description/README.md#compilación) |
+| Problemas encontrados y soluciones | [Modelo del robot, RViz y Gazebo](src/robot_description/README.md#problemas-encontrados-y-soluciones) |
+| Configuración y pruebas del control PS4 | [Teleoperación con PS4](src/assemblyscout_teleop/README.md) |
+
+Los videos de las actividades, el grafo de comunicación y las comprobaciones
+con comandos de ROS 2 se encuentran en esos documentos técnicos.
+
 ## Tecnologías utilizadas
 
 - Ubuntu 24.04 y ROS 2 Jazzy
