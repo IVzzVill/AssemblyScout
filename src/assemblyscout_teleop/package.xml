@@ -3,7 +3,7 @@
 <package format="3">
   <name>assemblyscout_teleop</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Teleoperación de AssemblyScout con control PS4 para ROS 2</description>
   <maintainer email="ivanvazquezv@icloud.com">zadrac</maintainer>
   <license>Apache-2.0</license>
 

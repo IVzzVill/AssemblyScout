@@ -17,7 +17,7 @@ setup(
     zip_safe=True,
     maintainer='zadrac',
     maintainer_email='ivanvazquezv@icloud.com',
-    description='TODO: Package description',
+    description='Teleoperación de AssemblyScout con control PS4 para ROS 2',
     license='Apache-2.0',
     extras_require={
         'test': [
