@@ -2,7 +2,7 @@
 <package format="3">
   <name>robot_description</name>
   <version>0.0.1</version>
-  <description>Modelo del robot para su visualización en RViz</description>
+  <description>Modelo de Colmibot para RViz y Gazebo Harmonic</description>
   <maintainer email="ivanvazquezv@icloud.com">zadrac</maintainer>
   <license>Apache-2.0</license>
 
@@ -14,8 +14,18 @@
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>joint_state_publisher_gui</exec_depend>
   <exec_depend>rviz2</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>rosgraph_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>tf2_msgs</exec_depend>
+  <exec_depend>joy</exec_depend>
+  <exec_depend>leakscout_teleop</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
+    <gazebo_ros gazebo_model_path="${prefix}/.." />
   </export>
 </package>

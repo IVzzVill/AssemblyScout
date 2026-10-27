@@ -20,15 +20,17 @@ class PS4Teleop(Node):
         self.declare_parameter('max_linear', 1.5)
         self.declare_parameter('max_angular', 1.5)
         self.declare_parameter('timeout_sec', 0.5)
+        self.declare_parameter('cmd_vel_topic', '/turtle1/cmd_vel')
 
         # Guarda la última lectura y su momento de recepción
         self.last_axes = None
         self.last_received = None
         self.last_log = 0.0
 
-        # Publica las velocidades para la tortuga
+        # Publica velocidades en el tópico configurado
+        cmd_vel_topic = self.get_parameter('cmd_vel_topic').value
         self.publisher_ = self.create_publisher(
-            Twist, '/turtle1/cmd_vel', 10
+            Twist, cmd_vel_topic, 10
         )
 
         # Recibe las entradas del control PS4
