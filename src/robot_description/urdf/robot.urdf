@@ -5,10 +5,10 @@
   <link name="base_link">
     <inertial>
       <!-- COM e inercia del chasis transformados de CAD a ROS -->
-      <origin xyz="0.0065838 -0.0009724 0.0376490" rpy="0 0 0" />
+      <origin xyz="-0.0065838 -0.0009724 0.0376490" rpy="0 0 0" />
       <mass value="2.2407514" />
       <inertia
-        ixx="0.0067021429" ixy="0.0000290305" ixz="-0.0009781756"
+        ixx="0.0067021429" ixy="-0.0000290305" ixz="0.0009781756"
         iyy="0.0070338942" iyz="-0.0000546439"
         izz="0.0077199183" />
     </inertial>
