@@ -5,7 +5,7 @@ find_package(ament_cmake REQUIRED)
 
 # Instala las mallas y los archivos de configuración del robot
 install(
-  DIRECTORY meshes urdf launch rviz
+  DIRECTORY meshes urdf launch rviz scripts
   DESTINATION share/${PROJECT_NAME}
 )
 

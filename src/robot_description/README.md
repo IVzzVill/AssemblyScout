@@ -177,7 +177,8 @@ sudo apt install \
   ros-jazzy-joint-state-publisher-gui \
   ros-jazzy-rviz2 \
   ros-jazzy-joy \
-  ros-jazzy-rqt-graph
+  ros-jazzy-rqt-graph \
+  wmctrl
 ```
 
 La combinación utilizada es ROS 2 Jazzy con Gazebo Harmonic. No se usan
@@ -213,6 +214,18 @@ El launch inicia:
 - `ros_gz_bridge`
 - `game_controller_node`
 - `ps4_teleop`
+- RViz con `odom` como marco fijo
+
+Gazebo y RViz muestran simultáneamente el mismo estado del robot. RViz
+recibe `/joint_states` y `/tf` desde la simulación mediante el puente; no
+se inicia `joint_state_publisher_gui` y por ello no existe otro publicador
+compitiendo por las articulaciones.
+
+Después de abrir las aplicaciones, `wmctrl` coloca Gazebo en la mitad
+izquierda y RViz en la mitad derecha del escritorio disponible. Con dos
+monitores configurados como escritorio extendido, cada aplicación puede
+quedar en una pantalla. Este acomodo se puede desactivar mediante
+`arrange_windows:=false`.
 
 Solo se debe mantener una ejecución del launch. Para detener todo el
 sistema se presiona `Ctrl+C` en la terminal correspondiente.
@@ -280,7 +293,16 @@ ros2 run rqt_graph rqt_graph
 
 ## Visualización en RViz
 
-La actividad anterior de RViz se conserva. Se ejecuta con:
+El launch de Gazebo abre RViz de forma predeterminada. Para ejecutar la
+simulación sin RViz se utiliza:
+
+```bash
+QT_QPA_PLATFORM=xcb ros2 launch robot_description gazebo.launch.py \
+  use_rviz:=false
+```
+
+La visualización independiente de la actividad anterior también se conserva.
+Se ejecuta con:
 
 ```bash
 cd ~/assemblyscout_ws
@@ -289,9 +311,10 @@ source install/setup.bash
 QT_QPA_PLATFORM=xcb ros2 launch robot_description display.launch.py
 ```
 
-Este launch utiliza `joint_state_publisher_gui` para modificar los ángulos
-de las ruedas manualmente. No se debe ejecutar al mismo tiempo que el
-launch de Gazebo, porque ambos podrían publicar estados articulares.
+El launch independiente utiliza `joint_state_publisher_gui` para modificar
+los ángulos de las ruedas manualmente. No se debe iniciar al mismo tiempo
+que el launch de Gazebo, ya que la simulación ya publica los estados
+articulares utilizados por la visualización simultánea.
 
 ## Problemas encontrados y soluciones
 
