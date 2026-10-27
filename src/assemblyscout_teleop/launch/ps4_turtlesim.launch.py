@@ -27,7 +27,7 @@ def generate_launch_description():
 
         # Convierte los gatillos y el stick derecho en velocidades
         Node(
-            package='leakscout_teleop',
+            package='assemblyscout_teleop',
             executable='ps4_teleop',
             parameters=[{
                 'axis_forward': 5,

@@ -1,8 +1,8 @@
-# Colmibot — Modelo en RViz y Gazebo
+# AssemblyScout — Modelo en RViz y Gazebo
 
 ## Descripción
 
-Este paquete contiene el modelo de Colmibot para ROS 2 Jazzy. El modelo
+Este paquete contiene el modelo de AssemblyScout para ROS 2 Jazzy. El modelo
 se puede visualizar en RViz y también se puede ejecutar como un robot
 diferencial en Gazebo Harmonic.
 
@@ -14,7 +14,7 @@ enviar órdenes de avance, retroceso y giro al robot simulado.
 La simulación permite comprobar la arquitectura de comunicación y el
 comportamiento general del robot. No representa con exactitud todos los
 contactos, deformaciones, pérdidas mecánicas o características eléctricas
-del Colmibot físico.
+del AssemblyScout físico.
 
 ## Herramientas utilizadas
 
@@ -33,7 +33,7 @@ del Colmibot físico.
 Los paquetes utilizados son:
 
 - `robot_description`: contiene el URDF, las mallas y los archivos launch
-- `leakscout_teleop`: convierte las entradas del mando PS4 en velocidades
+- `assemblyscout_teleop`: convierte las entradas del mando PS4 en velocidades
 
 Los archivos principales son:
 
@@ -188,9 +188,9 @@ los paquetes de Gazebo Classic.
 Desde el workspace:
 
 ```bash
-cd ~/leakscout_ws
+cd ~/assemblyscout_ws
 source /opt/ros/jazzy/setup.bash
-colcon build --packages-select leakscout_teleop robot_description --symlink-install
+colcon build --packages-select assemblyscout_teleop robot_description --symlink-install
 source install/setup.bash
 ```
 
@@ -199,7 +199,7 @@ source install/setup.bash
 Con el mando PS4 conectado:
 
 ```bash
-cd ~/leakscout_ws
+cd ~/assemblyscout_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 QT_QPA_PLATFORM=xcb ros2 launch robot_description gazebo.launch.py
@@ -208,7 +208,7 @@ QT_QPA_PLATFORM=xcb ros2 launch robot_description gazebo.launch.py
 El launch inicia:
 
 - Gazebo Harmonic con un mundo vacío y un plano de suelo
-- El modelo de Colmibot a una altura de 13.5 mm sobre el origen
+- El modelo de AssemblyScout a una altura de 13.5 mm sobre el origen
 - `robot_state_publisher`
 - `ros_gz_bridge`
 - `game_controller_node`
@@ -230,7 +230,7 @@ En otra terminal se puede comprobar el avance:
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-source ~/leakscout_ws/install/setup.bash
+source ~/assemblyscout_ws/install/setup.bash
 
 timeout 2s ros2 topic pub --rate 10 /cmd_vel geometry_msgs/msg/Twist \
   "{linear: {x: 0.15}, angular: {z: 0.0}}" || true
@@ -283,7 +283,7 @@ ros2 run rqt_graph rqt_graph
 La actividad anterior de RViz se conserva. Se ejecuta con:
 
 ```bash
-cd ~/leakscout_ws
+cd ~/assemblyscout_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 QT_QPA_PLATFORM=xcb ros2 launch robot_description display.launch.py
@@ -322,7 +322,7 @@ cálculos de contacto.
 ### Modelo muy pequeño al abrir Gazebo
 
 El robot sí se había cargado, pero la cámara inicial estaba alejada. Se
-seleccionó `colmibot` en el árbol de entidades y se presionó `F` para
+seleccionó `assemblyscout` en el árbol de entidades y se presionó `F` para
 centrar la vista.
 
 ### Parada después de una publicación temporal

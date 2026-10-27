@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'leakscout_teleop'
+package_name = 'assemblyscout_teleop'
 
 setup(
     name=package_name,
@@ -26,7 +26,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'ps4_teleop = leakscout_teleop.ps4_teleop:main',
+            'ps4_teleop = assemblyscout_teleop.ps4_teleop:main',
         ],
     },
 )

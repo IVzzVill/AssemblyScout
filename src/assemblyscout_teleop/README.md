@@ -1,22 +1,22 @@
-# LeakScout — Teleoperación con control PS4
+# AssemblyScout — Teleoperación con control PS4
 
 Autor: Ivan Vazquez Villar
 
 ## Visión del proyecto
 
-LeakScout busca desarrollar un sistema de inspección visual móvil basado en ROS 2 para observar puntos definidos alrededor de estaciones de mecanizado automotriz.
+AssemblyScout busca desarrollar una plataforma móvil de inspección visual multivista de ensambles automotrices en laboratorio.
 
-El alcance inicial propuesto es identificar cambios visuales compatibles con posibles acumulaciones de refrigerante o lubricante en un entorno de laboratorio y registrar ubicación, fecha y evidencia para revisión por mantenimiento.
+La teleoperación permite controlar manualmente la plataforma durante pruebas y preparación del sistema. La inspección visual, la navegación supervisada y el brazo posicionador de cámara pertenecen a etapas posteriores.
 
-No se plantea identificar químicamente el líquido ni diagnosticar la causa de una fuga.
+[Consultar la presentación general del proyecto](../../README.md)
 
 ## Alcance de la actividad 8
 
-Esta actividad desarrolla la teleoperación con un control PS4 y la valida mediante Turtlesim.
+Esta actividad implementó un nodo que convierte las entradas del control PS4 en velocidades y un archivo launch que inicia el sistema completo con Turtlesim.
 
-Se construirá un nodo que convierta las entradas del control en velocidades y un archivo launch que inicie el sistema completo.
+Posteriormente, el nodo se reutilizó para controlar el robot simulado en Gazebo mediante un tópico de velocidad configurable.
 
-Esta entrega todavía no incluye conducción del robot físico ni detección visual de fugas.
+Estas pruebas no incluyen conducción del robot físico ni inspección visual implementada.
 
 ## Entorno y comunicación
 
@@ -67,7 +67,23 @@ Los límites iniciales son 1.5 para velocidad lineal y 1.5 rad/s para velocidad 
 
 ## Estado actual
 
-Se implementó el nodo ps4_teleop, que recibe sensor_msgs/msg/Joy en /joy y publica geometry_msgs/msg/Twist en /turtle1/cmd_vel.
+Se implementó el nodo ps4_teleop, que recibe sensor_msgs/msg/Joy en /joy y publica geometry_msgs/msg/Twist.
+
+El parámetro cmd_vel_topic selecciona el destino: /turtle1/cmd_vel para Turtlesim y /cmd_vel para Gazebo.
+
+### Ejecución con Turtlesim
+
+    cd ~/assemblyscout_ws
+    source /opt/ros/jazzy/setup.bash
+    source install/setup.bash
+    ros2 launch assemblyscout_teleop ps4_turtlesim.launch.py
+
+### Integración con Gazebo
+
+El launch de simulación configura la velocidad lineal máxima en 0.40 m/s y la angular en 2.00 rad/s.
+
+[Consultar ejecución y documentación de Gazebo](../robot_description/README.md)
+
 
 ## Fuente consultada
 
@@ -78,4 +94,4 @@ Se implementó el nodo ps4_teleop, que recibe sensor_msgs/msg/Joy en /joy y publ
 
 Demostración de la teleoperación con el control PS4, la ejecución mediante launch y la comprobación del sistema en ROS 2.
 
-[Ver video de LeakScout con control PS4](https://drive.google.com/file/d/1dwj4O0xD4h5nkd6FfjZFCcKPgAALWCe_/view?usp=sharing)
+[Ver video de AssemblyScout con control PS4](https://drive.google.com/file/d/1dwj4O0xD4h5nkd6FfjZFCcKPgAALWCe_/view?usp=sharing)

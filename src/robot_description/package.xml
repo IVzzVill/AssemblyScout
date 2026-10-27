@@ -2,7 +2,7 @@
 <package format="3">
   <name>robot_description</name>
   <version>0.0.1</version>
-  <description>Modelo de Colmibot para RViz y Gazebo Harmonic</description>
+  <description>Modelo de AssemblyScout para RViz y Gazebo Harmonic</description>
   <maintainer email="ivanvazquezv@icloud.com">zadrac</maintainer>
   <license>Apache-2.0</license>
 
@@ -22,7 +22,7 @@
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>tf2_msgs</exec_depend>
   <exec_depend>joy</exec_depend>
-  <exec_depend>leakscout_teleop</exec_depend>
+  <exec_depend>assemblyscout_teleop</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

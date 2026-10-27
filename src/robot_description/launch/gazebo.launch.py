@@ -36,7 +36,7 @@ def generate_launch_description():
         package='ros_gz_sim',
         executable='create',
         arguments=[
-            '-name', 'colmibot',
+            '-name', 'assemblyscout',
             '-topic', 'robot_description',
             '-z', '0.0135',
         ],
@@ -69,7 +69,7 @@ def generate_launch_description():
     )
 
     teleop = Node(
-        package='leakscout_teleop',
+        package='assemblyscout_teleop',
         executable='ps4_teleop',
         parameters=[{
             'axis_forward': 5,

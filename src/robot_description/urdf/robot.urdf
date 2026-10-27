@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="colmibot">
+<robot name="assemblyscout">
   <!-- X hacia el frente, Y hacia la izquierda y Z hacia arriba -->
 
   <link name="base_link">
