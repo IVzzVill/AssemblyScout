@@ -59,7 +59,7 @@
         izz="0.0000046754" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="3.14159265359 0 0" />
       <geometry>
         <mesh
           filename="package://robot_description/meshes/rueda_izquierda.STL"
