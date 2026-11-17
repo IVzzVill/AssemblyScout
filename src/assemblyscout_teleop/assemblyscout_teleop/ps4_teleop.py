@@ -19,6 +19,7 @@ class PS4Teleop(Node):
         self.declare_parameter('axis_angular', 2)
         self.declare_parameter('max_linear', 1.5)
         self.declare_parameter('max_angular', 1.5)
+        self.declare_parameter('input_deadzone', 0.15)
         self.declare_parameter('timeout_sec', 0.5)
         self.declare_parameter('cmd_vel_topic', '/turtle1/cmd_vel')
 
@@ -68,12 +69,13 @@ class PS4Teleop(Node):
         axis_angular = self.get_parameter('axis_angular').value
         max_linear = self.get_parameter('max_linear').value
         max_angular = self.get_parameter('max_angular').value
+        deadzone = self.get_parameter('input_deadzone').value
         timeout = self.get_parameter('timeout_sec').value
 
         # Comprueba los límites y los índices configurados
         config_ok = all(
             math.isfinite(v) and v > 0.0
-            for v in (max_linear, max_angular, timeout)
+            for v in (max_linear, max_angular, deadzone, timeout)
         )
         axes_ok = (
             self.last_axes is not None
@@ -94,6 +96,14 @@ class PS4Teleop(Node):
 
             # Obtiene el giro del stick derecho
             angular = max(-1.0, min(1.0, self.last_axes[axis_angular]))
+
+            # Ignora pequeñas variaciones físicas del mando cuando está suelto.
+            if forward < deadzone:
+                forward = 0.0
+            if reverse < deadzone:
+                reverse = 0.0
+            if abs(angular) < deadzone:
+                angular = 0.0
 
             # Resta la presión de L2 a la de R2 para avanzar o retroceder
             command.linear.x = (forward - reverse) * max_linear

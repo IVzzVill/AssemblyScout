@@ -55,7 +55,7 @@ def generate_launch_description():
         executable='parameter_bridge',
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-            '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+            '/assemblyscout/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
@@ -84,8 +84,9 @@ def generate_launch_description():
             'axis_angular': 2,
             'max_linear': 0.40,
             'max_angular': 2.00,
+            'input_deadzone': 0.15,
             'timeout_sec': 0.5,
-            'cmd_vel_topic': '/cmd_vel',
+            'cmd_vel_topic': '/assemblyscout/cmd_vel',
         }],
         condition=IfCondition(use_joystick),
         output='screen',
@@ -117,6 +118,20 @@ def generate_launch_description():
         condition=IfCondition(arrange_windows),
     )
 
+    # Referencias iniciales: el brazo queda en la postura CAD, pero sus tres
+    # juntas siguen activas y listas para recibir nuevas referencias.
+    hold_arm_pose = TimerAction(
+        period=4.0,
+        actions=[
+            ExecuteProcess(cmd=['gz', 'topic', '-t', '/assemblyscout/arm/turret_position',
+                                '-m', 'gz.msgs.Double', '-p', 'data: 0.0'], output='screen'),
+            ExecuteProcess(cmd=['gz', 'topic', '-t', '/assemblyscout/arm/shoulder_position',
+                                '-m', 'gz.msgs.Double', '-p', 'data: 0.0'], output='screen'),
+            ExecuteProcess(cmd=['gz', 'topic', '-t', '/assemblyscout/arm/elbow_position',
+                                '-m', 'gz.msgs.Double', '-p', 'data: 0.0'], output='screen'),
+        ],
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_joystick',
@@ -141,4 +156,5 @@ def generate_launch_description():
         teleop,
         rviz,
         window_arranger,
+        hold_arm_pose,
     ])

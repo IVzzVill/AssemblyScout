@@ -1,51 +1,48 @@
 <?xml version="1.0"?>
 <robot name="assemblyscout">
-  <!-- X hacia el frente, Y hacia la izquierda y Z hacia arriba -->
+  <!-- X hacia el frente, Y hacia la izquierda y Z hacia arriba. -->
 
+  <!--
+    Las mallas del chasis usan el marco del ensamble principal de CAD.
+    Las tres mallas del brazo usan el marco del subensamble del brazo.
+    Se conservan sus vértices originales y se transforman desde URDF.
+  -->
   <link name="base_link">
     <inertial>
-      <!-- COM e inercia del chasis transformados de CAD a ROS -->
-      <origin xyz="-0.0065838 -0.0009724 0.0376490" rpy="0 0 0" />
-      <mass value="2.2407514" />
+      <!-- Propiedades del chasis actualizado, transformadas de CAD a ROS. -->
+      <origin xyz="-0.0050200 -0.0001100 0.0738800" rpy="0 0 0" />
+      <mass value="2.9850300" />
       <inertia
-        ixx="0.0067021429" ixy="-0.0000290305" ixz="0.0009781756"
-        iyy="0.0070338942" iyz="-0.0000546439"
-        izz="0.0077199183" />
+        ixx="0.0200321246" ixy="0.0000278202" ixz="-0.0015139529"
+        iyy="0.0203140360" iyz="-0.0000953432"
+        izz="0.0092648964" />
     </inertial>
 
     <visual>
-      <!-- CAD: X lateral, Y vertical y Z longitudinal -->
+      <!-- CAD principal: X lateral, Y vertical y Z longitudinal. -->
       <origin xyz="0 0 0" rpy="1.57079632679 0 -1.57079632679" />
       <geometry>
-        <mesh
-          filename="package://robot_description/meshes/chasis.STL"
-          scale="0.001 0.001 0.001" />
+        <mesh filename="package://robot_description/meshes/chasis.STL"
+              scale="0.001 0.001 0.001" />
       </geometry>
       <material name="chassis_gray">
         <color rgba="0.65 0.65 0.68 1" />
       </material>
     </visual>
 
-    <!-- Colisión simplificada para no usar la malla visual densa -->
+    <!-- Colisiones de la simulación móvil que ya eran estables. -->
     <collision name="body_collision">
       <origin xyz="0 0 0.080" rpy="0 0 0" />
-      <geometry>
-        <box size="0.180 0.160 0.120" />
-      </geometry>
+      <geometry><box size="0.180 0.160 0.120" /></geometry>
     </collision>
-
-    <!-- Los apoyos ya están incluidos en la masa y la malla del chasis -->
+    <!-- Los apoyos ya forman parte de la masa del chasis. -->
     <collision name="front_support_collision">
       <origin xyz="0.080 0 -0.0055625" rpy="0 0 0" />
-      <geometry>
-        <sphere radius="0.0079375" />
-      </geometry>
+      <geometry><sphere radius="0.0079375" /></geometry>
     </collision>
     <collision name="rear_support_collision">
       <origin xyz="-0.080 0 -0.0055625" rpy="0 0 0" />
-      <geometry>
-        <sphere radius="0.0079375" />
-      </geometry>
+      <geometry><sphere radius="0.0079375" /></geometry>
     </collision>
   </link>
 
@@ -53,33 +50,25 @@
     <inertial>
       <origin xyz="0.0000001 -0.0001772 0.0000031" rpy="0 0 0" />
       <mass value="0.0193581" />
-      <inertia
-        ixx="0.0000046755" ixy="0" ixz="0"
-        iyy="0.0000091143" iyz="0"
-        izz="0.0000046754" />
+      <inertia ixx="0.0000046755" ixy="0" ixz="0"
+               iyy="0.0000091143" iyz="0" izz="0.0000046754" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="3.14159265359 0 0" />
       <geometry>
-        <mesh
-          filename="package://robot_description/meshes/rueda_izquierda.STL"
-          scale="0.001 0.001 0.001" />
+        <mesh filename="package://robot_description/meshes/rueda_izquierda.STL"
+              scale="0.001 0.001 0.001" />
       </geometry>
-      <material name="wheel_dark">
-        <color rgba="0.12 0.12 0.12 1" />
-      </material>
+      <material name="wheel_dark"><color rgba="0.12 0.12 0.12 1" /></material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
-      <geometry>
-        <cylinder radius="0.030" length="0.006" />
-      </geometry>
+      <geometry><cylinder radius="0.030" length="0.006" /></geometry>
     </collision>
   </link>
 
   <joint name="wheel_left_joint" type="continuous">
-    <parent link="base_link" />
-    <child link="wheel_left_link" />
+    <parent link="base_link" /><child link="wheel_left_link" />
     <origin xyz="0 0.0890475 0.0165" rpy="0 0 0" />
     <axis xyz="0 1 0" />
     <limit effort="5.0" velocity="30.0" />
@@ -90,76 +79,167 @@
     <inertial>
       <origin xyz="0 0.0001772 0.0000031" rpy="0 0 0" />
       <mass value="0.0193581" />
-      <inertia
-        ixx="0.0000046755" ixy="0" ixz="0"
-        iyy="0.0000091143" iyz="0"
-        izz="0.0000046754" />
+      <inertia ixx="0.0000046755" ixy="0" ixz="0"
+               iyy="0.0000091143" iyz="0" izz="0.0000046754" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://robot_description/meshes/rueda_derecha.STL"
-          scale="0.001 0.001 0.001" />
+        <mesh filename="package://robot_description/meshes/rueda_derecha.STL"
+              scale="0.001 0.001 0.001" />
       </geometry>
       <material name="wheel_dark" />
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
-      <geometry>
-        <cylinder radius="0.030" length="0.006" />
-      </geometry>
+      <geometry><cylinder radius="0.030" length="0.006" /></geometry>
     </collision>
   </link>
 
   <joint name="wheel_right_joint" type="continuous">
-    <parent link="base_link" />
-    <child link="wheel_right_link" />
+    <parent link="base_link" /><child link="wheel_right_link" />
     <origin xyz="0 -0.0890475 0.0165" rpy="0 0 0" />
     <axis xyz="0 1 0" />
     <limit effort="5.0" velocity="30.0" />
     <dynamics damping="0.05" friction="0.01" />
   </joint>
 
-  <gazebo reference="base_link">
-    <mu1>0.05</mu1>
-    <mu2>0.05</mu2>
-  </gazebo>
-  <gazebo reference="wheel_left_link">
-    <mu1>1.0</mu1>
-    <mu2>1.0</mu2>
-  </gazebo>
-  <gazebo reference="wheel_right_link">
-    <mu1>1.0</mu1>
-    <mu2>1.0</mu2>
-  </gazebo>
+  <!-- Brazo dinámico: las masas e inercias conciliadas preservan la masa total
+       del ensamble CAD hasta disponer de una descomposición definitiva. -->
+  <link name="turret_link">
+    <inertial>
+      <origin xyz="0.0028664 0.0090140 0.0150813" rpy="0 0 0" />
+      <mass value="0.16680893" />
+      <inertia ixx="0.0001462859" ixy="-0.0000056788" ixz="-0.0000188260"
+               iyy="0.0001576064" iyz="-0.0000262382" izz="0.0001609491" />
+    </inertial>
+    <visual>
+      <!-- Marco de EnsambleBrazo a ROS, con origen en el eje de la torreta. -->
+      <origin xyz="0 0 -0.0725000" rpy="1.57079632679 0 1.57079632679" />
+      <geometry>
+        <mesh filename="package://robot_description/meshes/torreta_brazo.STL"
+              scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="arm_orange"><color rgba="0.85 0.38 0.10 1" /></material>
+    </visual>
+    <collision name="turret_collision">
+      <origin xyz="0 0 0.0285" rpy="0 0 0" />
+      <geometry><box size="0.100 0.100 0.075" /></geometry>
+    </collision>
+  </link>
+
+  <joint name="turret_joint" type="revolute">
+    <parent link="base_link" /><child link="turret_link" />
+    <!-- Centro CAD (0, 234.5, 0) mm, llevado a ROS. -->
+    <origin xyz="0 0 0.2345000" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14159265359" upper="3.14159265359" effort="5.0" velocity="1.5" />
+    <dynamics damping="0.5" friction="0.05" />
+  </joint>
+
+  <link name="upper_arm_link">
+    <inertial>
+      <origin xyz="-0.0576414 0.0025373 0.0143291" rpy="0 0 0" />
+      <mass value="0.17608337" />
+      <inertia ixx="0.0000496191" ixy="-0.0000040335" ixz="0.0000727948"
+               iyy="0.0003532089" iyz="0.0000009735" izz="0.0003241583" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.0201424 0.0129816 -0.1125000"
+              rpy="1.57079632679 0 1.57079632679" />
+      <geometry>
+        <mesh filename="package://robot_description/meshes/brazo.STL"
+              scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="arm_orange" />
+    </visual>
+    <collision name="upper_arm_collision">
+      <origin xyz="-0.0585 -0.0006 0.0139" rpy="0 0 0" />
+      <geometry><box size="0.162 0.032 0.073" /></geometry>
+    </collision>
+  </link>
+
+  <joint name="shoulder_joint" type="revolute">
+    <parent link="turret_link" /><child link="upper_arm_link" />
+    <!-- Centro del hombro medido en CAD y expresado desde la torreta. -->
+    <origin xyz="0.0201424 -0.0129816 0.0400000" rpy="0 0 0" />
+    <axis xyz="0 -1 0" />
+    <limit lower="-3.14159265359" upper="3.14159265359" effort="5.0" velocity="1.5" />
+    <dynamics damping="0.5" friction="0.05" />
+  </joint>
+
+  <link name="forearm_camera_link">
+    <inertial>
+      <origin xyz="0.1202176 0.0242732 0.1313684" rpy="0 0 0" />
+      <mass value="0.38585149" />
+      <inertia ixx="0.0007783379" ixy="0.0000957668" ixz="-0.0010346485"
+               iyy="0.0024806109" iyz="0.0000599918" izz="0.0019526617" />
+    </inertial>
+    <visual>
+      <!-- Incluye el soporte y la representación visual de la cámara Yuju. -->
+      <origin xyz="0.0992800 0.0142800 -0.0901700"
+              rpy="1.57079632679 0 1.57079632679" />
+      <geometry>
+        <mesh filename="package://robot_description/meshes/antebrazo_camara.STL"
+              scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="camera_black"><color rgba="0.10 0.10 0.12 1" /></material>
+    </visual>
+    <collision name="forearm_collision">
+      <origin xyz="0.0931 0.0220 0.1082" rpy="0 0 0" />
+      <geometry><box size="0.224 0.095 0.153" /></geometry>
+    </collision>
+  </link>
+
+  <joint name="elbow_joint" type="revolute">
+    <parent link="upper_arm_link" /><child link="forearm_camera_link" />
+    <!-- Eje aproximado con CAD; se refinará con la medición del segundo centro. -->
+    <origin xyz="-0.1194224 -0.0012984 -0.0223300" rpy="0 0 0" />
+    <axis xyz="0 -1 0" />
+    <limit lower="-3.14159265359" upper="3.14159265359" effort="5.0" velocity="1.5" />
+    <dynamics damping="0.5" friction="0.05" />
+  </joint>
+
+  <gazebo reference="base_link"><mu1>0.05</mu1><mu2>0.05</mu2></gazebo>
+  <gazebo reference="wheel_left_link"><mu1>1.0</mu1><mu2>1.0</mu2></gazebo>
+  <gazebo reference="wheel_right_link"><mu1>1.0</mu1><mu2>1.0</mu2></gazebo>
 
   <gazebo>
-    <plugin
-      filename="gz-sim-diff-drive-system"
-      name="gz::sim::systems::DiffDrive">
+    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
       <left_joint>wheel_left_joint</left_joint>
       <right_joint>wheel_right_joint</right_joint>
       <wheel_separation>0.178095</wheel_separation>
       <wheel_radius>0.030</wheel_radius>
       <odom_publish_frequency>30</odom_publish_frequency>
-      <topic>/cmd_vel</topic>
-      <odom_topic>/odom</odom_topic>
-      <tf_topic>/tf</tf_topic>
-      <frame_id>odom</frame_id>
-      <child_frame_id>base_link</child_frame_id>
+      <!-- Tópico exclusivo del robot: evita recibir órdenes de procesos ROS
+           anteriores que pudieran seguir publicando en /cmd_vel. -->
+      <topic>/assemblyscout/cmd_vel</topic><odom_topic>/odom</odom_topic><tf_topic>/tf</tf_topic>
+      <frame_id>odom</frame_id><child_frame_id>base_link</child_frame_id>
       <max_linear_velocity>0.60</max_linear_velocity>
       <max_angular_velocity>3.00</max_angular_velocity>
       <max_linear_acceleration>1.00</max_linear_acceleration>
       <max_angular_acceleration>4.00</max_angular_acceleration>
     </plugin>
 
-    <plugin
-      filename="gz-sim-joint-state-publisher-system"
-      name="gz::sim::systems::JointStatePublisher">
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
       <topic>/joint_states</topic>
-      <joint_name>wheel_left_joint</joint_name>
-      <joint_name>wheel_right_joint</joint_name>
+      <joint_name>wheel_left_joint</joint_name><joint_name>wheel_right_joint</joint_name>
+      <joint_name>turret_joint</joint_name><joint_name>shoulder_joint</joint_name>
+      <joint_name>elbow_joint</joint_name>
+    </plugin>
+    <!-- Mantienen la postura CAD mientras las articulaciones siguen siendo
+         revolutas y pueden recibir referencias explícitas después. -->
+    <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+      <joint_name>turret_joint</joint_name><topic>/assemblyscout/arm/turret_position</topic>
+      <p_gain>25</p_gain><d_gain>3</d_gain><cmd_max>0.8</cmd_max><cmd_min>-0.8</cmd_min>
+    </plugin>
+    <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+      <joint_name>shoulder_joint</joint_name><topic>/assemblyscout/arm/shoulder_position</topic>
+      <p_gain>25</p_gain><d_gain>3</d_gain><cmd_max>0.8</cmd_max><cmd_min>-0.8</cmd_min>
+    </plugin>
+    <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+      <joint_name>elbow_joint</joint_name><topic>/assemblyscout/arm/elbow_position</topic>
+      <p_gain>25</p_gain><d_gain>3</d_gain><cmd_max>0.8</cmd_max><cmd_min>-0.8</cmd_min>
     </plugin>
   </gazebo>
 </robot>

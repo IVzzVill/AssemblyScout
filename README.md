@@ -67,9 +67,9 @@ que una estación represente siempre el mismo defecto.
 | Elemento | Estado |
 | --- | --- |
 | Base móvil | Cuenta con modelo URDF, RViz, Gazebo y teleoperación PS4 |
-| Logitech C920 | Se conservará en el chasis para observar el entorno |
-| Brazo de Dipmecatrónica | Seleccionado, pendiente de medición e integración |
-| Cámara Yuju 14684 | Seleccionada como cámara de detalle, pendiente de verificación, montaje y calibración |
+| Logitech C920 | Cámara física montada en la base para observar el entorno |
+| Brazo de Dipmecatrónica | Integrado dinámicamente en URDF, RViz y Gazebo con torreta, hombro y codo revolutos; faltan límites físicos y una interfaz de control propia |
+| Cámara Yuju 14684 | Cámara física de detalle montada en el brazo; su representación visual en CAD y Gazebo conserva la geometría disponible de una Logitech C920 |
 
 La lista compartida del brazo incluye cuatro servomotores MG995, estructura,
 pinza, rodamientos y tornillería. Todavía deben confirmarse sus articulaciones
@@ -105,8 +105,9 @@ deberá detenerse y registrar el bloqueo.
 | Componente | Avance |
 | --- | --- |
 | Teleoperación con PS4 | Control de avance, retroceso y giro, probado en Turtlesim y Gazebo |
-| Nodo de teleoperación | Conversión de mensajes `/joy` en comandos `/cmd_vel` |
+| Nodo de teleoperación | Conversión de mensajes `/joy` en comandos `/assemblyscout/cmd_vel` |
 | Modelo URDF | Representación del chasis y las dos ruedas |
+| Brazo y cámara de detalle | Torreta, brazo y antebrazo con cámara integrados dinámicamente y sostenidos en la postura CAD inicial |
 | Visualización en RViz | Modelo articulado y ejes de referencia |
 | Simulación en Gazebo | Propiedades físicas, colisiones simplificadas y movimiento |
 | Control diferencial | Conversión de velocidad lineal y angular en movimiento de ruedas |
@@ -123,13 +124,14 @@ proyecto. La conducción y validación sobre el robot físico siguen pendientes.
 - Circuito predefinido de tres estaciones
 - Brazo de Dipmecatrónica
 - Cámara Yuju 14684
-- Conservación de la Logitech C920
+- Conservación de la Logitech C920 en la base
 - Configuración inicial del soporte representativo
 - Categorías de resultados
 - Estructura prevista para el registro de evidencia
 
-El brazo, la Yuju, el soporte del arnés y las estaciones todavía no están
-integrados en los archivos URDF, RViz o Gazebo.
+El brazo y la cámara de detalle ya están representados en los archivos URDF,
+RViz y Gazebo. La Yuju física, su soporte definitivo, el soporte del arnés y
+las estaciones permanecen pendientes de validación e integración física.
 
 ## Arquitectura implementada
 
@@ -141,7 +143,7 @@ game_controller_node
     |  /joy
     v
 ps4_teleop
-    |  /cmd_vel
+    |  /assemblyscout/cmd_vel
     v
 ros_gz_bridge
     |
@@ -206,10 +208,9 @@ asistente.
 
 - Definir dimensiones y materiales finales del soporte del arnés
 - Fabricar la placa, fijaciones, clips y montaje del conector
-- Confirmar articulaciones, ejes, límites y dimensiones del brazo
-- Diseñar y validar el soporte para la Yuju
+- Confirmar los ejes, límites físicos y dimensiones finales del brazo
+- Diseñar y validar el soporte físico para la Yuju
 - Verificar las características reales de la cámara
-- Integrar brazo y cámara en URDF, RViz y Gazebo
 - Calibrar la cámara y las transformaciones del sistema
 - Definir puntos y vistas de inspección
 - Construir y distribuir físicamente las tres estaciones
