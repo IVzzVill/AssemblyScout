@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/SafetyStatusPanel">
+    <file>SafetyStatusPanel.qml</file>
+  </qresource>
+</RCC>

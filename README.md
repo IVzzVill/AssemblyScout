@@ -1,161 +1,112 @@
 # AssemblyScout
 
-**Plataforma móvil para inspección visual multivista de arneses automotrices**
+**Plataforma móvil para inspección visual multivista en una celda de ensamble.**
 
-AssemblyScout es un proyecto en desarrollo para inspeccionar la presencia y
-colocación exterior de componentes de un arnés automotriz mediante imágenes
-obtenidas desde distintos puntos de vista.
-
-La propuesta combina una base móvil, un brazo posicionador de cámara y una
-aplicación local para conservar imágenes, resultados e historial. La evaluación
-se realizará en un circuito predefinido de tres estaciones para el mismo tipo
-de arnés.
+AssemblyScout desarrolla una base móvil con brazo posicionador para acercar una
+cámara a puntos de inspección. La simulación actual representa una celda de
+prueba con dos estaciones, una banda estática que las conecta y sensores de
+proximidad para validar la circulación antes de llevar el diseño al robot
+físico.
 
 ## Objetivo del proyecto
 
-El objetivo final es desplazar el robot entre estaciones de inspección, detener
-la base, posicionar una cámara de detalle y capturar vistas previamente
-definidas del arnés.
+El objetivo es que el robot se desplace entre estaciones, se detenga de forma
+segura, coloque la cámara de detalle en vistas definidas y conserve la
+evidencia de la inspección. La primera pieza de trabajo es un conjunto de freno
+impreso en 3D; sus modelos CAD definitivos sustituirán los elementos temporales
+actuales de la simulación.
 
-El sistema evaluará únicamente características exteriores visibles, como:
+La inspección evaluará solamente aspectos exteriores visibles: presencia,
+posición y orientación aparente de los componentes. Los resultados previstos
+son:
 
-- Presencia de componentes
-- Colocación exterior
-- Orientación visible
-- Posición aparente de clips, cable y conector
+- **Conforme en los puntos inspeccionados**
+- **Anomalía detectada**
+- **Inspección inconclusa**
 
-Los resultados utilizarán tres categorías:
-
-- **Conforme en los puntos inspeccionados:** los criterios visuales definidos
-  pudieron comprobarse
-- **Anomalía detectada:** existe evidencia visual de una discrepancia
-- **Inspección inconclusa:** la imagen, el enfoque o la visibilidad no permiten
-  completar la evaluación
-
-Una imagen deficiente o un punto oculto no demuestra ausencia ni conformidad.
-
-El proyecto no comprobará continuidad eléctrica, crimpado interno, torque,
-fuerza de retención ni características que no sean visibles.
-
-## Arnés y estaciones
-
-Se construirá un tramo representativo del arnés sobre un soporte sencillo,
-priorizando facilidad de diseño CAD y fabricación física.
-
-La configuración inicial contempla:
-
-- Una placa rectangular con taladros y fijaciones
-- Dos clips de guiado
-- Un tramo de cable
-- Un conector comercial
-
-Las cantidades finales, dimensiones, materiales y componentes exactos se
-definirán después de probar el enfoque de la cámara y el alcance del brazo.
-Los componentes comerciales podrán representarse mediante envolventes
-simplificadas en CAD.
-
-No se fabricará una puerta ni se reproducirá el interior del conector.
-
-El circuito tendrá tres estaciones para el mismo tipo de arnés. La distribución,
-altura, orientación y número de ejemplares todavía están pendientes.
-
-Las condiciones correctas y anómalas se rotarán entre ubicaciones para evitar
-que una estación represente siempre el mismo defecto.
-
-## Hardware seleccionado
-
-| Elemento | Estado |
-| --- | --- |
-| Base móvil | Cuenta con modelo URDF, RViz, Gazebo y teleoperación PS4 |
-| Logitech C920 | Cámara física montada en la base para observar el entorno |
-| Brazo de Dipmecatrónica | Integrado dinámicamente en URDF, RViz y Gazebo con torreta, hombro y codo revolutos; faltan límites físicos y una interfaz de control propia |
-| Cámara Yuju 14684 | Cámara física de detalle montada en el brazo; su representación visual en CAD y Gazebo conserva la geometría disponible de una Logitech C920 |
-
-La lista compartida del brazo incluye cuatro servomotores MG995, estructura,
-pinza, rodamientos y tornillería. Todavía deben confirmarse sus articulaciones
-efectivas, límites, dimensiones y montaje. La pinza podrá sustituirse por un
-soporte para cámara si las pruebas muestran que es viable.
-
-El brazo posicionará la cámara con la base detenida. No manipulará ni reparará
-el arnés.
-
-La ficha compartida de la Yuju anuncia resolución 1080p, masa de 90 g y enfoque
-desde aproximadamente 30 cm. Estos valores están pendientes de comprobación y
-no representan resultados medidos por el proyecto.
-
-## Funcionamiento previsto
-
-1. Iniciar una misión y cargar la configuración del recorrido
-2. Desplazar la base hasta una estación
-3. Detener el robot
-4. Posicionar la cámara mediante el brazo
-5. Capturar las vistas definidas para el arnés
-6. Evaluar los criterios exteriores visibles
-7. Guardar imágenes, configuración y resultado
-8. Permitir la consulta del historial y la evidencia
-
-En una etapa posterior se desarrollarán evasión local y recuperación del
-circuito dentro de condiciones validadas. Si no existe un paso viable, el robot
-deberá detenerse y registrar el bloqueo.
+Una zona oculta o una imagen insuficiente no prueba ni ausencia ni
+conformidad. El proyecto no pretende verificar propiedades internas, fuerza,
+torque o continuidad eléctrica.
 
 ## Estado actual
 
-### Implementado
+### Implementado y probado en simulación
 
-| Componente | Avance |
-| --- | --- |
-| Teleoperación con PS4 | Control de avance, retroceso y giro, probado en Turtlesim y Gazebo |
-| Nodo de teleoperación | Conversión de mensajes `/joy` en comandos `/assemblyscout/cmd_vel` |
-| Modelo URDF | Representación del chasis y las dos ruedas |
-| Brazo y cámara de detalle | Torreta, brazo y antebrazo con cámara integrados dinámicamente y sostenidos en la postura CAD inicial |
-| Visualización en RViz | Modelo articulado y ejes de referencia |
-| Simulación en Gazebo | Propiedades físicas, colisiones simplificadas y movimiento |
-| Control diferencial | Conversión de velocidad lineal y angular en movimiento de ruedas |
-| Comunicación ROS 2–Gazebo | Intercambio de velocidad, odometría, estados articulares, transformaciones y reloj |
-| Archivos launch | Inicio de los componentes de cada demostración |
-| Evidencias | Videos de teleoperación, RViz y Gazebo, además del grafo de comunicación |
+- Base móvil diferencial con dos ruedas, URDF, RViz y Gazebo Harmonic.
+- Teleoperación PS4 para avance, retroceso y giro.
+- Brazo dinámico con torreta, hombro y codo, conservando su postura inicial y
+  respuesta física al movimiento de la base.
+- Dos cámaras contempladas en el modelo: Logitech C920 para observar el entorno
+  desde la base y Yuju 14684 como cámara de detalle en el brazo.
+- Celda de inspección con dos estaciones elevadas, marcas de ruta y una banda
+  estática en forma de Z que conecta las estaciones sin cubrir las superficies
+  de inspección.
+- Tres sensores láser simulados: frontal, izquierdo y derecho.
+- Panel de proximidad en Gazebo que muestra por sensor una distancia real,
+  estado libre/cerca/obstáculo y permite insertar cajas de prueba.
+- Filtro de seguridad: las lecturas frontales reducen o detienen únicamente el
+  avance; las laterales informan proximidad sin bloquear el giro para permitir
+  maniobrar y evitar un obstáculo.
+- Comunicación entre ROS 2, Gazebo, el control y RViz.
 
-La simulación y la teleoperación corresponden a antecedentes técnicos del
-proyecto. La conducción y validación sobre el robot físico siguen pendientes.
+Las estaciones usan por ahora mallas temporales de componentes de freno. No se
+consideran el ensamble final ni resultados de inspección hasta recibir e
+integrar el CAD definitivo.
 
-### Seleccionado o definido
+### Pendiente
 
-- Arnés automotriz como objeto de inspección
-- Circuito predefinido de tres estaciones
-- Brazo de Dipmecatrónica
-- Cámara Yuju 14684
-- Conservación de la Logitech C920 en la base
-- Configuración inicial del soporte representativo
-- Categorías de resultados
-- Estructura prevista para el registro de evidencia
+- Recibir e integrar las piezas CAD finales en STL, con sus dimensiones y
+  posiciones de montaje reales.
+- Definir las configuraciones correcta y anómala de cada estación, y una
+  interfaz para alternarlas durante las pruebas.
+- Calibrar los puntos de inspección y las vistas de ambas cámaras.
+- Validar dimensiones, límites y soporte físico definitivo del brazo y la
+  cámara Yuju.
+- Crear navegación autónoma, evasión local y recuperación del recorrido.
+- Capturar imágenes, evaluar visualmente las piezas y registrar evidencia.
+- Implementar el historial local, exportación y asistente de consulta.
+- Transferir y validar el sistema en el robot físico.
 
-El brazo y la cámara de detalle ya están representados en los archivos URDF,
-RViz y Gazebo. La Yuju física, su soporte definitivo, el soporte del arnés y
-las estaciones permanecen pendientes de validación e integración física.
-
-## Arquitectura implementada
+## Arquitectura de comunicación
 
 ```text
 Control PS4
-    |
-    v
-game_controller_node
-    |  /joy
-    v
+   │  /joy
+   ▼
 ps4_teleop
-    |  /assemblyscout/cmd_vel
-    v
+   │  /assemblyscout/cmd_vel_raw
+   ▼
+safety_gate ◄── sensores láser frontal, izquierdo y derecho
+   │  /assemblyscout/cmd_vel
+   ▼
 ros_gz_bridge
-    |
-    v
-Control diferencial de Gazebo
-    |
-    +-- /odom
-    +-- /joint_states
-    +-- /tf
-          |
-          v
-         RViz
+   ▼
+Gazebo: control diferencial, odometría y estados articulares
+   │
+   ├── /odom, /joint_states, /tf ──► RViz
+   └── /assemblyscout/safety/status ──► Panel Proximidad de Gazebo
+```
+
+El nodo `safety_gate` es el único que entrega velocidad al control diferencial.
+Así se evita que una orden anterior continúe moviendo la base y se mantiene una
+ruta clara entre el control y la simulación.
+
+## Ejecución
+
+Desde la raíz del workspace:
+
+```bash
+cd ~/assemblyscout_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 launch robot_description gazebo.launch.py
+```
+
+El lanzamiento abre Gazebo, RViz y la teleoperación con PS4. Para iniciar sin
+RViz o sin acomodar las ventanas:
+
+```bash
+ros2 launch robot_description gazebo.launch.py use_rviz:=false arrange_windows:=false
 ```
 
 Los controles actuales son:
@@ -165,62 +116,10 @@ Los controles actuales son:
 - **Stick derecho horizontal:** girar
 - **Controles sueltos:** velocidad cero
 
-## Aplicación y registro
-
-Se plantea una aplicación local sencilla para consultar historial,
-imágenes/resultados y un asistente. No incluirá editor de circuitos, mapas ni
-control directo de actuadores.
-
-El registro previsto utilizará:
-
-- Un archivo JSON por inspección
-- Imágenes organizadas en carpetas
-- Un manifiesto por recorrido
-- Exportación CSV derivada
-
-Los registros conservarán identificadores de misión, estación, arnés o sesión,
-punto, vista, fecha, configuración y resultado.
-
-Se preverá un único proceso escritor, uso de archivos temporales y recuperación
-de registros incompletos. No se utilizarán SQL ni SQLite.
-
-## Asistente
-
-El asistente podrá consultar y resumir evidencia recuperada mediante código.
-
-Deberá:
-
-- Utilizar conteos deterministas
-- Referenciar registros e imágenes
-- Reconocer cuando faltan datos
-
-No podrá:
-
-- Enviar comandos de movimiento
-- Modificar evidencia
-- Declarar conformidad
-
-El modelo, proveedor y ejecución local o mediante API siguen pendientes. La
-inspección, el registro y la consulta convencional deberán funcionar sin el
-asistente.
-
-## Trabajo pendiente
-
-- Definir dimensiones y materiales finales del soporte del arnés
-- Fabricar la placa, fijaciones, clips y montaje del conector
-- Confirmar los ejes, límites físicos y dimensiones finales del brazo
-- Diseñar y validar el soporte físico para la Yuju
-- Verificar las características reales de la cámara
-- Calibrar la cámara y las transformaciones del sistema
-- Definir puntos y vistas de inspección
-- Construir y distribuir físicamente las tres estaciones
-- Transferir y validar el control en el robot físico
-- Implementar captura e inspección visual
-- Desarrollar evasión local y recuperación del circuito
-- Implementar el registro de evidencia
-- Desarrollar la aplicación local
-- Incorporar posteriormente el asistente
-- Comparar una vista y múltiples vistas mediante pruebas documentadas
+Para probar detección sin modificar el mundo, usa el botón **Añadir caja** del
+panel **Proximidad** de Gazebo. La caja es un obstáculo físico: la distancia que
+muestra cada sensor procede de su lectura láser, no de una distancia fijada en
+la interfaz.
 
 ## Organización del repositorio
 
@@ -228,43 +127,24 @@ asistente.
 AssemblyScout/
 ├── README.md
 └── src/
-    ├── assemblyscout_teleop/
-    │   └── README.md
-    └── robot_description/
-        └── README.md
+    ├── assemblyscout_teleop/   # Control PS4 y filtro de seguridad
+    └── robot_description/     # URDF, mallas, mundos, launch, RViz y Gazebo
 ```
 
-- [Teleoperación con PS4](src/assemblyscout_teleop/README.md): entradas del
-  control, nodo de velocidad, ejecución y video
-- [Modelo del robot, RViz y Gazebo](src/robot_description/README.md): mallas,
-  URDF, propiedades físicas, comandos, problemas, soluciones y evidencias
+Los README internos conservan la documentación técnica y las evidencias de las
+entregas anteriores:
 
-Los README internos documentan las entregas técnicas anteriores y se conservan
-sin modificaciones.
-
-## Documentación técnica
-
-| Contenido | Documento |
-| --- | --- |
-| Herramientas y dependencias | [Modelo, RViz y Gazebo](src/robot_description/README.md#herramientas-utilizadas) |
-| Modificaciones del modelo | [Modelo, RViz y Gazebo](src/robot_description/README.md#modificaciones-realizadas-al-modelo) |
-| Arquitectura de comunicación | [Modelo, RViz y Gazebo](src/robot_description/README.md#arquitectura-de-comunicación) |
-| Compilación y ejecución | [Modelo, RViz y Gazebo](src/robot_description/README.md#compilación) |
-| Problemas y soluciones | [Modelo, RViz y Gazebo](src/robot_description/README.md#problemas-encontrados-y-soluciones) |
-| Configuración del PS4 | [Teleoperación con PS4](src/assemblyscout_teleop/README.md) |
-
-Los comandos, videos y evidencias permanecen en los documentos técnicos
-correspondientes.
+- [Teleoperación con PS4](src/assemblyscout_teleop/README.md)
+- [Modelo del robot, RViz y Gazebo](src/robot_description/README.md)
 
 ## Tecnologías actuales
 
 - Ubuntu 24.04
 - ROS 2 Jazzy
 - Python
-- URDF
+- URDF y SDF
+- Gazebo Harmonic y `ros_gz`
 - RViz
-- Gazebo Harmonic
-- `ros_gz`
 - SolidWorks
 - Control PS4
 

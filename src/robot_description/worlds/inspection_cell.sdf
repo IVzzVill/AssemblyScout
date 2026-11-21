@@ -1,0 +1,130 @@
+<?xml version="1.0" ?>
+<sdf version="1.10">
+  <world name="assemblyscout_inspection_cell">
+    <physics name="1ms" type="ode">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <gui fullscreen="false">
+      <plugin filename="GzScene3D" name="3D View">
+        <gz-gui><title>Celda de inspección</title><property key="showTitleBar" type="bool">false</property></gz-gui>
+        <engine>ogre2</engine><scene>scene</scene>
+        <camera_pose>-2.2 -2.0 1.8 0 0.50 0.72</camera_pose>
+      </plugin>
+      <plugin filename="WorldControl" name="World control">
+        <gz-gui><title>World control</title><property key="showTitleBar" type="bool">false</property></gz-gui>
+        <play_pause>true</play_pause><step>true</step><start_paused>false</start_paused>
+      </plugin>
+      <!-- Gazebo ya proporciona en su barra el botón Spawn para insertar cajas. -->
+      <!-- Dibuja en la escena los haces y puntos de impacto de los tres sensores. -->
+      <plugin filename="VisualizeLidar" name="Visualize Lidar"/>
+      <!-- Indicadores verde, amarillo y rojo para el estado de proximidad. -->
+      <plugin filename="SafetyStatusPanel" name="Safety status">
+        <gz-gui>
+          <title>Proximidad</title>
+          <property key="width" type="double">260</property>
+          <property key="height" type="double">180</property>
+          <property key="state" type="string">floating</property>
+          <anchors target="3D View">
+            <line own="right" target="right"/>
+            <line own="top" target="top"/>
+          </anchors>
+        </gz-gui>
+        <topic>/assemblyscout/safety/status</topic>
+      </plugin>
+      <plugin filename="EntityTree" name="Entity tree"/>
+    </gui>
+
+    <gravity>0 0 -9.8</gravity>
+    <scene><ambient>0.55 0.55 0.55 1</ambient><background>0.10 0.12 0.16 1</background><shadows>true</shadows></scene>
+
+    <light name="key_light" type="directional">
+      <pose>0 0 4 0 0 0</pose><cast_shadows>true</cast_shadows>
+      <diffuse>0.95 0.95 0.90 1</diffuse><specular>0.2 0.2 0.2 1</specular>
+      <attenuation><range>12</range><constant>0.9</constant><linear>0.01</linear><quadratic>0.001</quadratic></attenuation>
+      <direction>-0.35 0.25 -1</direction>
+    </light>
+
+    <model name="floor"><static>true</static><link name="link">
+      <collision name="collision"><geometry><plane><normal>0 0 1</normal><size>8 8</size></plane></geometry></collision>
+      <visual name="visual"><geometry><plane><normal>0 0 1</normal><size>8 8</size></plane></geometry><material><ambient>0.25 0.27 0.30 1</ambient><diffuse>0.25 0.27 0.30 1</diffuse></material></visual>
+    </link></model>
+
+    <!-- Ruta y marcas de parada, en metros y reproducibles dentro del mundo. -->
+    <model name="route_markings"><static>true</static><link name="link">
+      <visual name="route"><pose>1.20 0 0.003 0 0 0</pose><geometry><box><size>1.80 0.03 0.006</size></box></geometry><material><ambient>0.10 0.55 0.95 1</ambient><diffuse>0.10 0.55 0.95 1</diffuse></material></visual>
+      <visual name="stop_station_1"><pose>1.20 0 0.004 0 0 0</pose><geometry><box><size>0.04 0.34 0.008</size></box></geometry><material><ambient>0.98 0.74 0.12 1</ambient><diffuse>0.98 0.74 0.12 1</diffuse></material></visual>
+      <visual name="stop_station_2"><pose>2.20 0 0.004 0 0 0</pose><geometry><box><size>0.04 0.34 0.008</size></box></geometry><material><ambient>0.98 0.74 0.12 1</ambient><diffuse>0.98 0.74 0.12 1</diffuse></material></visual>
+    </link></model>
+
+    <!-- Bases 0.15 x 0.12 m. Estación 1 queda a la izquierda propia y estación 2 a la derecha propia. -->
+    <model name="station_1"><static>true</static><pose>1.20 0.55 0 0 0 0</pose><link name="link">
+      <collision name="support_collision"><pose>0 0 0.1125 0 0 0</pose><geometry><box><size>0.15 0.12 0.225</size></box></geometry></collision>
+      <visual name="support"><pose>0 0 0.1125 0 0 0</pose><geometry><box><size>0.15 0.12 0.225</size></box></geometry><material><ambient>0.18 0.20 0.23 1</ambient><diffuse>0.18 0.20 0.23 1</diffuse></material></visual>
+      <visual name="plate"><pose>0 0 0.2325 0 0 0</pose><geometry><box><size>0.15 0.12 0.015</size></box></geometry><material><ambient>0.55 0.57 0.60 1</ambient><diffuse>0.55 0.57 0.60 1</diffuse></material></visual>
+      <visual name="caliper_visual"><pose>0 0 0.247 0 0 0</pose><geometry><mesh><uri>model://robot_description/meshes/inspection/Caliper Body Halves.stl</uri><scale>0.001 0.001 0.001</scale></mesh></geometry><material><ambient>0.82 0.22 0.12 1</ambient><diffuse>0.82 0.22 0.12 1</diffuse></material></visual>
+      <collision name="inspection_volume"><pose>0 0 0.270 0 0 0</pose><geometry><box><size>0.10 0.06 0.05</size></box></geometry></collision>
+    </link></model>
+
+    <model name="station_2"><static>true</static><pose>2.20 -0.55 0 0 0 0</pose><link name="link">
+      <collision name="support_collision"><pose>0 0 0.1125 0 0 0</pose><geometry><box><size>0.15 0.12 0.225</size></box></geometry></collision>
+      <visual name="support"><pose>0 0 0.1125 0 0 0</pose><geometry><box><size>0.15 0.12 0.225</size></box></geometry><material><ambient>0.18 0.20 0.23 1</ambient><diffuse>0.18 0.20 0.23 1</diffuse></material></visual>
+      <visual name="plate"><pose>0 0 0.2325 0 0 0</pose><geometry><box><size>0.15 0.12 0.015</size></box></geometry><material><ambient>0.55 0.57 0.60 1</ambient><diffuse>0.55 0.57 0.60 1</diffuse></material></visual>
+      <visual name="brake_arms_visual"><pose>0 0 0.245 0 0 0</pose><geometry><mesh><uri>model://robot_description/meshes/inspection/Brake Arms.stl</uri><scale>0.001 0.001 0.001</scale></mesh></geometry><material><ambient>0.20 0.65 0.32 1</ambient><diffuse>0.20 0.65 0.32 1</diffuse></material></visual>
+      <collision name="inspection_volume"><pose>0 0 0.270 0 0 0</pose><geometry><box><size>0.10 0.08 0.05</size></box></geometry></collision>
+    </link></model>
+
+    <!-- Banda decorativa en Z. Los tramos rectos llegan a las caras laterales
+         de las estaciones con 5 mm de holgura; el tramo central las une en
+         diagonal sin cubrir las placas de inspección. Es estática y obstáculo. -->
+    <model name="conveyor_crossing"><static>true</static><link name="link">
+      <!-- Salida de estación 1: de x=1.28 a x=1.50 en y=0.55. -->
+      <collision name="station_1_connector_collision"><pose>1.39 0.55 0.105 0 0 0</pose><geometry><box><size>0.22 0.24 0.21</size></box></geometry></collision>
+      <visual name="station_1_connector"><pose>1.39 0.55 0.215 0 0 0</pose><geometry><box><size>0.22 0.22 0.035</size></box></geometry><material><ambient>0.06 0.07 0.08 1</ambient><diffuse>0.06 0.07 0.08 1</diffuse></material></visual>
+      <!-- Unión diagonal: de (1.50, 0.55) a (1.89, -0.55). -->
+      <collision name="diagonal_collision"><pose>1.695 0 0.105 0 0 -1.2301</pose><geometry><box><size>1.167 0.24 0.21</size></box></geometry></collision>
+      <visual name="diagonal_belt"><pose>1.695 0 0.215 0 0 -1.2301</pose><geometry><box><size>1.167 0.22 0.035</size></box></geometry><material><ambient>0.06 0.07 0.08 1</ambient><diffuse>0.06 0.07 0.08 1</diffuse></material></visual>
+      <!-- Entrada de estación 2: de x=1.89 a x=2.12 en y=-0.55. -->
+      <collision name="station_2_connector_collision"><pose>2.005 -0.55 0.105 0 0 0</pose><geometry><box><size>0.23 0.24 0.21</size></box></geometry></collision>
+      <visual name="station_2_connector"><pose>2.005 -0.55 0.215 0 0 0</pose><geometry><box><size>0.23 0.22 0.035</size></box></geometry><material><ambient>0.06 0.07 0.08 1</ambient><diffuse>0.06 0.07 0.08 1</diffuse></material></visual>
+      <!-- Placas redondas de transición: suavizan las dos vueltas de la Z. -->
+      <collision name="bend_1_collision"><pose>1.50 0.55 0.105 0 0 0</pose><geometry><cylinder><radius>0.12</radius><length>0.21</length></cylinder></geometry></collision>
+      <visual name="bend_1"><pose>1.50 0.55 0.215 0 0 0</pose><geometry><cylinder><radius>0.12</radius><length>0.035</length></cylinder></geometry><material><ambient>0.06 0.07 0.08 1</ambient><diffuse>0.06 0.07 0.08 1</diffuse></material></visual>
+      <collision name="bend_2_collision"><pose>1.89 -0.55 0.105 0 0 0</pose><geometry><cylinder><radius>0.12</radius><length>0.21</length></cylinder></geometry></collision>
+      <visual name="bend_2"><pose>1.89 -0.55 0.215 0 0 0</pose><geometry><cylinder><radius>0.12</radius><length>0.035</length></cylinder></geometry><material><ambient>0.06 0.07 0.08 1</ambient><diffuse>0.06 0.07 0.08 1</diffuse></material></visual>
+      <!-- Perfil de resguardo bajo: coincide con la altura de los sensores
+           de distancia y forma parte física de la banda, no de la interfaz. -->
+      <collision name="guard_station_1_left"><pose>1.39 0.71 0.075 0 0 0</pose><geometry><box><size>0.22 0.04 0.08</size></box></geometry></collision>
+      <visual name="guard_station_1_left_visual"><pose>1.39 0.71 0.075 0 0 0</pose><geometry><box><size>0.22 0.04 0.08</size></box></geometry><material><ambient>0.28 0.30 0.33 1</ambient><diffuse>0.28 0.30 0.33 1</diffuse></material></visual>
+      <collision name="guard_station_1_right"><pose>1.39 0.39 0.075 0 0 0</pose><geometry><box><size>0.22 0.04 0.08</size></box></geometry></collision>
+      <visual name="guard_station_1_right_visual"><pose>1.39 0.39 0.075 0 0 0</pose><geometry><box><size>0.22 0.04 0.08</size></box></geometry><material><ambient>0.28 0.30 0.33 1</ambient><diffuse>0.28 0.30 0.33 1</diffuse></material></visual>
+      <collision name="guard_diagonal_left"><pose>1.846 0.053 0.075 0 0 -1.2301</pose><geometry><box><size>1.167 0.04 0.08</size></box></geometry></collision>
+      <visual name="guard_diagonal_left_visual"><pose>1.846 0.053 0.075 0 0 -1.2301</pose><geometry><box><size>1.167 0.04 0.08</size></box></geometry><material><ambient>0.28 0.30 0.33 1</ambient><diffuse>0.28 0.30 0.33 1</diffuse></material></visual>
+      <collision name="guard_diagonal_right"><pose>1.544 -0.053 0.075 0 0 -1.2301</pose><geometry><box><size>1.167 0.04 0.08</size></box></geometry></collision>
+      <visual name="guard_diagonal_right_visual"><pose>1.544 -0.053 0.075 0 0 -1.2301</pose><geometry><box><size>1.167 0.04 0.08</size></box></geometry><material><ambient>0.28 0.30 0.33 1</ambient><diffuse>0.28 0.30 0.33 1</diffuse></material></visual>
+      <collision name="guard_station_2_left"><pose>2.005 -0.39 0.075 0 0 0</pose><geometry><box><size>0.23 0.04 0.08</size></box></geometry></collision>
+      <visual name="guard_station_2_left_visual"><pose>2.005 -0.39 0.075 0 0 0</pose><geometry><box><size>0.23 0.04 0.08</size></box></geometry><material><ambient>0.28 0.30 0.33 1</ambient><diffuse>0.28 0.30 0.33 1</diffuse></material></visual>
+      <collision name="guard_station_2_right"><pose>2.005 -0.71 0.075 0 0 0</pose><geometry><box><size>0.23 0.04 0.08</size></box></geometry></collision>
+      <visual name="guard_station_2_right_visual"><pose>2.005 -0.71 0.075 0 0 0</pose><geometry><box><size>0.23 0.04 0.08</size></box></geometry><material><ambient>0.28 0.30 0.33 1</ambient><diffuse>0.28 0.30 0.33 1</diffuse></material></visual>
+      <!-- Soportes rectangulares: sostienen los tres tramos sin añadir rodillos. -->
+      <visual name="leg_station_1_a"><pose>1.35 0.47 0.095 0 0 0</pose><geometry><box><size>0.05 0.05 0.19</size></box></geometry><material><ambient>0.32 0.34 0.37 1</ambient><diffuse>0.32 0.34 0.37 1</diffuse></material></visual>
+      <visual name="leg_station_1_b"><pose>1.35 0.63 0.095 0 0 0</pose><geometry><box><size>0.05 0.05 0.19</size></box></geometry><material><ambient>0.32 0.34 0.37 1</ambient><diffuse>0.32 0.34 0.37 1</diffuse></material></visual>
+      <visual name="leg_diagonal_a"><pose>1.59 0.30 0.095 0 0 0</pose><geometry><box><size>0.05 0.05 0.19</size></box></geometry><material><ambient>0.32 0.34 0.37 1</ambient><diffuse>0.32 0.34 0.37 1</diffuse></material></visual>
+      <visual name="leg_diagonal_b"><pose>1.80 -0.30 0.095 0 0 0</pose><geometry><box><size>0.05 0.05 0.19</size></box></geometry><material><ambient>0.32 0.34 0.37 1</ambient><diffuse>0.32 0.34 0.37 1</diffuse></material></visual>
+      <visual name="leg_station_2_a"><pose>2.04 -0.47 0.095 0 0 0</pose><geometry><box><size>0.05 0.05 0.19</size></box></geometry><material><ambient>0.32 0.34 0.37 1</ambient><diffuse>0.32 0.34 0.37 1</diffuse></material></visual>
+      <visual name="leg_station_2_b"><pose>2.04 -0.63 0.095 0 0 0</pose><geometry><box><size>0.05 0.05 0.19</size></box></geometry><material><ambient>0.32 0.34 0.37 1</ambient><diffuse>0.32 0.34 0.37 1</diffuse></material></visual>
+    </link></model>
+
+    <!-- Escenario inicial: pasillo libre. Los obstáculos reproducibles se añadirán como escenarios de prueba. -->
+
+  </world>
+</sdf>

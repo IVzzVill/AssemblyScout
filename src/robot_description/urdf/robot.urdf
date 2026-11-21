@@ -200,6 +200,75 @@
     <dynamics damping="0.5" friction="0.05" />
   </joint>
 
+
+  <!-- VL53L1X central: centro CAD (0.55, 75.50, -98.20) mm convertido
+       al marco ROS: (0.09820, -0.00055, 0.07550) m. Es un gpu_lidar de
+       corto alcance que representa la distancia; no modela el firmware real. -->
+  <link name="range_front_link">
+    <visual><geometry><box size="0.010 0.012 0.006" /></geometry>
+      <material name="sensor_black"><color rgba="0.04 0.04 0.05 1" /></material></visual>
+  </link>
+  <joint name="range_front_joint" type="fixed">
+    <parent link="base_link" /><child link="range_front_link" />
+    <origin xyz="0.09820 -0.00055 0.07550" rpy="0 0 0" />
+  </joint>
+
+  <gazebo reference="range_front_link">
+    <sensor name="range_front" type="gpu_lidar">
+      <always_on>true</always_on><visualize>true</visualize><update_rate>10</update_rate>
+      <topic>/assemblyscout/range/front/scan</topic><gz_frame_id>range_front_link</gz_frame_id>
+      <lidar><scan><horizontal><samples>9</samples><resolution>1</resolution>
+        <min_angle>-0.23562</min_angle><max_angle>0.23562</max_angle></horizontal>
+        <vertical><samples>1</samples><resolution>1</resolution><min_angle>0</min_angle><max_angle>0</max_angle></vertical>
+      </scan><range><min>0.04</min><max>4.0</max><resolution>0.01</resolution></range>
+      <noise><type>gaussian</type><mean>0.0</mean><stddev>0.005</stddev></noise></lidar>
+    </sensor>
+  </gazebo>
+
+
+  <!-- Los nombres izquierda/derecha siguen el punto de vista propio del robot.
+       En el marco ROS, +X es frente y +Y es izquierda: los sensores laterales
+       miran perpendicularmente al avance, no en diagonal hacia delante. -->
+  <link name="range_right_link">
+    <visual><geometry><box size="0.010 0.012 0.006" /></geometry>
+      <material name="sensor_black" /></visual>
+  </link>
+  <joint name="range_right_joint" type="fixed">
+    <parent link="base_link" /><child link="range_right_link" />
+    <origin xyz="0.083110 -0.049045 0.075230" rpy="0 0 -1.57079632679" />
+  </joint>
+  <gazebo reference="range_right_link">
+    <sensor name="range_right" type="gpu_lidar">
+      <always_on>true</always_on><visualize>true</visualize><update_rate>10</update_rate>
+      <topic>/assemblyscout/range/right/scan</topic><gz_frame_id>range_right_link</gz_frame_id>
+      <lidar><scan><horizontal><samples>9</samples><resolution>1</resolution>
+        <min_angle>-0.23562</min_angle><max_angle>0.23562</max_angle></horizontal>
+        <vertical><samples>1</samples><resolution>1</resolution><min_angle>0</min_angle><max_angle>0</max_angle></vertical>
+      </scan><range><min>0.04</min><max>4.0</max><resolution>0.01</resolution></range>
+      <noise><type>gaussian</type><mean>0.0</mean><stddev>0.005</stddev></noise></lidar>
+    </sensor>
+  </gazebo>
+
+  <link name="range_left_link">
+    <visual><geometry><box size="0.010 0.012 0.006" /></geometry>
+      <material name="sensor_black" /></visual>
+  </link>
+  <joint name="range_left_joint" type="fixed">
+    <parent link="base_link" /><child link="range_left_link" />
+    <origin xyz="0.085390 0.048500 0.075500" rpy="0 0 1.57079632679" />
+  </joint>
+  <gazebo reference="range_left_link">
+    <sensor name="range_left" type="gpu_lidar">
+      <always_on>true</always_on><visualize>true</visualize><update_rate>10</update_rate>
+      <topic>/assemblyscout/range/left/scan</topic><gz_frame_id>range_left_link</gz_frame_id>
+      <lidar><scan><horizontal><samples>9</samples><resolution>1</resolution>
+        <min_angle>-0.23562</min_angle><max_angle>0.23562</max_angle></horizontal>
+        <vertical><samples>1</samples><resolution>1</resolution><min_angle>0</min_angle><max_angle>0</max_angle></vertical>
+      </scan><range><min>0.04</min><max>4.0</max><resolution>0.01</resolution></range>
+      <noise><type>gaussian</type><mean>0.0</mean><stddev>0.005</stddev></noise></lidar>
+    </sensor>
+  </gazebo>
+
   <gazebo reference="base_link"><mu1>0.05</mu1><mu2>0.05</mu2></gazebo>
   <gazebo reference="wheel_left_link"><mu1>1.0</mu1><mu2>1.0</mu2></gazebo>
   <gazebo reference="wheel_right_link"><mu1>1.0</mu1><mu2>1.0</mu2></gazebo>

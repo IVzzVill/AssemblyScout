@@ -7,6 +7,10 @@
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <build_depend>gz_gui_vendor</build_depend>
+  <build_depend>gz_transport_vendor</build_depend>
+  <build_depend>gz_plugin_vendor</build_depend>
+  <build_depend>gz_msgs_vendor</build_depend>
 
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
@@ -23,6 +27,10 @@
   <exec_depend>tf2_msgs</exec_depend>
   <exec_depend>joy</exec_depend>
   <exec_depend>assemblyscout_teleop</exec_depend>
+  <exec_depend>gz_gui_vendor</exec_depend>
+  <exec_depend>gz_transport_vendor</exec_depend>
+  <exec_depend>gz_plugin_vendor</exec_depend>
+  <exec_depend>gz_msgs_vendor</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

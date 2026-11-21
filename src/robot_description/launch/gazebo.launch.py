@@ -7,6 +7,7 @@ from launch.actions import (
     ExecuteProcess,
     IncludeLaunchDescription,
     TimerAction,
+    AppendEnvironmentVariable,
 )
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -22,11 +23,18 @@ def generate_launch_description():
     use_rviz = LaunchConfiguration('use_rviz')
     arrange_windows = LaunchConfiguration('arrange_windows')
 
+    gazebo_resources = AppendEnvironmentVariable(
+        'GZ_SIM_RESOURCE_PATH', str(package.parent)
+    )
+    gazebo_gui_plugins = AppendEnvironmentVariable(
+        'GZ_GUI_PLUGIN_PATH', str(package.parent.parent / 'lib')
+    )
+
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             str(ros_gz_sim / 'launch' / 'gz_sim.launch.py')
         ),
-        launch_arguments={'gz_args': '-r empty.sdf'}.items(),
+        launch_arguments={'gz_args': f"-r {package / 'worlds' / 'inspection_cell.sdf'}"}.items(),
     )
 
     robot_state_publisher = Node(
@@ -59,6 +67,10 @@ def generate_launch_description():
             '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            '/assemblyscout/range/front/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/assemblyscout/range/left/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/assemblyscout/range/right/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/assemblyscout/safety/status@std_msgs/msg/String]gz.msgs.StringMsg',
         ],
         output='screen',
     )
@@ -86,9 +98,23 @@ def generate_launch_description():
             'max_angular': 2.00,
             'input_deadzone': 0.15,
             'timeout_sec': 0.5,
-            'cmd_vel_topic': '/assemblyscout/cmd_vel',
+            'cmd_vel_topic': '/assemblyscout/cmd_vel_raw',
         }],
         condition=IfCondition(use_joystick),
+        output='screen',
+    )
+
+    safety_gate = Node(
+        package='assemblyscout_teleop',
+        executable='safety_gate',
+        parameters=[{
+            'input_topic': '/assemblyscout/cmd_vel_raw',
+            'output_topic': '/assemblyscout/cmd_vel',
+            'stop_distance': 0.20,
+            'slow_distance': 0.60,
+            'detection_distance': 0.65,
+            'side_stop_distance': 0.18,
+        }],
         output='screen',
     )
 
@@ -148,12 +174,15 @@ def generate_launch_description():
             default_value='true',
             description='Acomoda Gazebo y RViz en mitades de la pantalla',
         ),
+        gazebo_resources,
+        gazebo_gui_plugins,
         gazebo,
         robot_state_publisher,
         spawn_robot,
         bridge,
         joystick,
         teleop,
+        safety_gate,
         rviz,
         window_arranger,
         hold_arm_pose,

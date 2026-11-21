@@ -27,6 +27,7 @@ setup(
     entry_points={
         'console_scripts': [
             'ps4_teleop = assemblyscout_teleop.ps4_teleop:main',
+            'safety_gate = assemblyscout_teleop.safety_gate:main',
         ],
     },
 )
