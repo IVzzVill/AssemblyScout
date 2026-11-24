@@ -60,7 +60,7 @@ aproximaciones de simulación y se validarán con el asesor y el montaje físico
 ### Pendiente
 
 - Validar las tres posturas: reposo, Estación 1 y Estación 2.
-- Integrar el ensamble CAD definitivo y ajustar su posición en cada estación.
+- Ajustar su posición en cada estación.
 - Guardar una captura por estación con fecha y analizar si la pieza está
   conforme o presenta una anomalía visible.
 - Llevar el sistema a la Raspberry Pi y mover la base física con PS4.
@@ -68,7 +68,7 @@ aproximaciones de simulación y se validarán con el asesor y el montaje físico
 - Conectar y probar los tres MG995 con alimentación independiente.
 - Automatizar el recorrido: inicio, Estación 1, Estación 2 y regreso.
 
-## Arquitectura de comunicación
+## Arquitectura de comunicación actual via teleop
 
 ```text
 Control PS4
