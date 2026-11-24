@@ -35,37 +35,38 @@ torque o continuidad eléctrica.
 - Base móvil diferencial con dos ruedas, URDF, RViz y Gazebo Harmonic.
 - Teleoperación PS4 para avance, retroceso y giro.
 - Brazo dinámico con torreta, hombro y codo, conservando su postura inicial y
-  respuesta física al movimiento de la base.
-- Dos cámaras contempladas en el modelo: Logitech C920 para observar el entorno
-  desde la base y Yuju 14684 como cámara de detalle en el brazo.
+  respuesta física al movimiento de la base. El panel independiente permite
+  regresar a reposo y usar las posturas iniciales de Estación 1 y Estación 2.
+- Dos cámaras virtuales activas: Logitech C920 en el chasis para observar el
+  entorno y Yuju 14684 en el brazo como cámara de detalle.
 - Celda de inspección con dos estaciones elevadas, marcas de ruta y una banda
   estática en forma de Z que conecta las estaciones sin cubrir las superficies
   de inspección.
+- Piezas STL centradas en cada estación, con variantes **Correcta**, **Error 1**
+  y **Error 2** que se seleccionan desde el panel de Gazebo.
 - Tres sensores láser simulados: frontal, izquierdo y derecho.
 - Panel de proximidad en Gazebo que muestra por sensor una distancia real,
   estado libre/cerca/obstáculo y permite insertar cajas de prueba.
 - Filtro de seguridad: las lecturas frontales reducen o detienen únicamente el
   avance; las laterales informan proximidad sin bloquear el giro para permitir
   maniobrar y evitar un obstáculo.
-- Comunicación entre ROS 2, Gazebo, el control y RViz.
+- Comunicación entre ROS 2, Gazebo, el control y RViz. Cada lanzamiento inicia
+  desde el mundo base, sin conservar obstáculos ni posiciones de una sesión
+  anterior.
 
-Las estaciones usan por ahora mallas temporales de componentes de freno. No se
-consideran el ensamble final ni resultados de inspección hasta recibir e
-integrar el CAD definitivo.
+La vista de inspección prevista es una por estación. Las posturas actuales son
+aproximaciones de simulación y se validarán con el asesor y el montaje físico.
 
 ### Pendiente
 
-- Recibir e integrar las piezas CAD finales en STL, con sus dimensiones y
-  posiciones de montaje reales.
-- Definir las configuraciones correcta y anómala de cada estación, y una
-  interfaz para alternarlas durante las pruebas.
-- Calibrar los puntos de inspección y las vistas de ambas cámaras.
-- Validar dimensiones, límites y soporte físico definitivo del brazo y la
-  cámara Yuju.
-- Crear navegación autónoma, evasión local y recuperación del recorrido.
-- Capturar imágenes, evaluar visualmente las piezas y registrar evidencia.
-- Implementar el historial local, exportación y asistente de consulta.
-- Transferir y validar el sistema en el robot físico.
+- Validar con el asesor las tres posturas: reposo, Estación 1 y Estación 2.
+- Integrar el ensamble CAD definitivo y ajustar su posición en cada estación.
+- Guardar una captura por estación con fecha y analizar si la pieza está
+  conforme o presenta una anomalía visible.
+- Llevar el sistema a la Raspberry Pi y mover la base física con PS4.
+- Integrar motores, encoders, sensores de proximidad y seguridad física.
+- Conectar y probar los tres MG995 con alimentación independiente.
+- Automatizar el recorrido: inicio, Estación 1, Estación 2 y regreso.
 
 ## Arquitectura de comunicación
 
@@ -127,6 +128,7 @@ la interfaz.
 AssemblyScout/
 ├── README.md
 └── src/
+    ├── assemblyscout_hardware/ # Puente preparado para ESP32 y pruebas físicas
     ├── assemblyscout_teleop/   # Control PS4 y filtro de seguridad
     └── robot_description/     # URDF, mallas, mundos, launch, RViz y Gazebo
 ```

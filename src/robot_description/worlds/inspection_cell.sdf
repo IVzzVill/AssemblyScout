@@ -27,12 +27,20 @@
       <!-- Gazebo ya proporciona en su barra el botón Spawn para insertar cajas. -->
       <!-- Dibuja en la escena los haces y puntos de impacto de los tres sensores. -->
       <plugin filename="VisualizeLidar" name="Visualize Lidar"/>
+      <!-- Vista en tiempo real de la cámara virtual del brazo. -->
+      <plugin filename="ImageDisplay" name="Inspection camera">
+        <topic>/assemblyscout/arm/camera/image</topic>
+      </plugin>
+      <!-- Vista fija del chasis: representa la Logitech C920. -->
+      <plugin filename="ImageDisplay" name="Base camera">
+        <topic>/assemblyscout/base/camera/image</topic>
+      </plugin>
       <!-- Indicadores verde, amarillo y rojo para el estado de proximidad. -->
       <plugin filename="SafetyStatusPanel" name="Safety status">
         <gz-gui>
-          <title>Proximidad</title>
-          <property key="width" type="double">260</property>
-          <property key="height" type="double">180</property>
+          <title>Proximidad y estaciones</title>
+          <property key="width" type="double">290</property>
+          <property key="height" type="double">405</property>
           <property key="state" type="string">floating</property>
           <anchors target="3D View">
             <line own="right" target="right"/>
@@ -40,6 +48,18 @@
           </anchors>
         </gz-gui>
         <topic>/assemblyscout/safety/status</topic>
+      </plugin>
+      <plugin filename="ArmControlPanel" name="Arm control">
+        <gz-gui>
+          <title>Brazo y cámara</title>
+          <property key="width" type="double">290</property>
+          <property key="height" type="double">380</property>
+          <property key="state" type="string">floating</property>
+          <anchors target="3D View">
+            <line own="left" target="left"/>
+            <line own="bottom" target="bottom"/>
+          </anchors>
+        </gz-gui>
       </plugin>
       <plugin filename="EntityTree" name="Entity tree"/>
     </gui>
@@ -59,11 +79,26 @@
       <visual name="visual"><geometry><plane><normal>0 0 1</normal><size>8 8</size></plane></geometry><material><ambient>0.25 0.27 0.30 1</ambient><diffuse>0.25 0.27 0.30 1</diffuse></material></visual>
     </link></model>
 
-    <!-- Ruta y marcas de parada, en metros y reproducibles dentro del mundo. -->
+    <!-- Circuito visual continuo: 1 / azul llega a estación 1, 2 / cian
+         bordea la banda hacia estación 2 y 3 / morado vuelve al inicio.
+         Es guía de validación; la navegación autónoma usará estos puntos. -->
     <model name="route_markings"><static>true</static><link name="link">
-      <visual name="route"><pose>1.20 0 0.003 0 0 0</pose><geometry><box><size>1.80 0.03 0.006</size></box></geometry><material><ambient>0.10 0.55 0.95 1</ambient><diffuse>0.10 0.55 0.95 1</diffuse></material></visual>
-      <visual name="stop_station_1"><pose>1.20 0 0.004 0 0 0</pose><geometry><box><size>0.04 0.34 0.008</size></box></geometry><material><ambient>0.98 0.74 0.12 1</ambient><diffuse>0.98 0.74 0.12 1</diffuse></material></visual>
-      <visual name="stop_station_2"><pose>2.20 0 0.004 0 0 0</pose><geometry><box><size>0.04 0.34 0.008</size></box></geometry><material><ambient>0.98 0.74 0.12 1</ambient><diffuse>0.98 0.74 0.12 1</diffuse></material></visual>
+      <!-- Ruta 1: origen (0, 0) a parada de estación 1 (0.95, 0.55). -->
+      <visual name="route_1_blue_a"><pose>0.30 0.00 0.003 0 0 0</pose><geometry><box><size>0.60 0.05 0.006</size></box></geometry><material><ambient>0.05 0.25 0.95 1</ambient><diffuse>0.05 0.25 0.95 1</diffuse></material></visual>
+      <visual name="route_1_blue_b"><pose>0.71 0.14 0.003 0 0 0.904</pose><geometry><box><size>0.356 0.05 0.006</size></box></geometry><material><ambient>0.05 0.25 0.95 1</ambient><diffuse>0.05 0.25 0.95 1</diffuse></material></visual>
+      <visual name="route_1_blue_c"><pose>0.885 0.415 0.003 0 0 1.122</pose><geometry><box><size>0.300 0.05 0.006</size></box></geometry><material><ambient>0.05 0.25 0.95 1</ambient><diffuse>0.05 0.25 0.95 1</diffuse></material></visual>
+      <!-- Ruta 2: rodea la banda por su lado exterior, sin cruzarla. -->
+      <visual name="route_2_cyan_a"><pose>1.025 0.725 0.003 0 0 1.166</pose><geometry><box><size>0.381 0.05 0.006</size></box></geometry><material><ambient>0.04 0.92 0.82 1</ambient><diffuse>0.04 0.92 0.82 1</diffuse></material></visual>
+      <visual name="route_2_cyan_b"><pose>1.425 0.90 0.003 0 0 0</pose><geometry><box><size>0.650 0.05 0.006</size></box></geometry><material><ambient>0.04 0.92 0.82 1</ambient><diffuse>0.04 0.92 0.82 1</diffuse></material></visual>
+      <visual name="route_2_cyan_c"><pose>2.085 0.375 0.003 0 0 -1.003</pose><geometry><box><size>1.246 0.05 0.006</size></box></geometry><material><ambient>0.04 0.92 0.82 1</ambient><diffuse>0.04 0.92 0.82 1</diffuse></material></visual>
+      <visual name="route_2_cyan_d"><pose>2.435 -0.35 0.003 0 0 -1.496</pose><geometry><box><size>0.401 0.05 0.006</size></box></geometry><material><ambient>0.04 0.92 0.82 1</ambient><diffuse>0.04 0.92 0.82 1</diffuse></material></visual>
+      <!-- Ruta 3: regreso amplio por debajo de la celda. -->
+      <visual name="route_3_purple_a"><pose>2.50 -0.825 0.003 0 0 -1.391</pose><geometry><box><size>0.559 0.05 0.006</size></box></geometry><material><ambient>0.64 0.10 0.94 1</ambient><diffuse>0.64 0.10 0.94 1</diffuse></material></visual>
+      <visual name="route_3_purple_b"><pose>1.325 -1.10 0.003 0 0 3.14159</pose><geometry><box><size>2.450 0.05 0.006</size></box></geometry><material><ambient>0.64 0.10 0.94 1</ambient><diffuse>0.64 0.10 0.94 1</diffuse></material></visual>
+      <visual name="route_3_purple_c"><pose>0.05 -0.55 0.003 0 0 1.662</pose><geometry><box><size>1.104 0.05 0.006</size></box></geometry><material><ambient>0.64 0.10 0.94 1</ambient><diffuse>0.64 0.10 0.94 1</diffuse></material></visual>
+      <!-- Barras: la base se detiene aquí para inspeccionar. -->
+      <visual name="stop_station_1"><pose>0.95 0.55 0.004 0 0 1.122</pose><geometry><box><size>0.04 0.34 0.008</size></box></geometry><material><ambient>0.98 0.74 0.12 1</ambient><diffuse>0.98 0.74 0.12 1</diffuse></material></visual>
+      <visual name="stop_station_2"><pose>2.45 -0.55 0.004 0 0 -1.496</pose><geometry><box><size>0.04 0.34 0.008</size></box></geometry><material><ambient>0.98 0.74 0.12 1</ambient><diffuse>0.98 0.74 0.12 1</diffuse></material></visual>
     </link></model>
 
     <!-- Bases 0.15 x 0.12 m. Estación 1 queda a la izquierda propia y estación 2 a la derecha propia. -->
@@ -71,16 +106,23 @@
       <collision name="support_collision"><pose>0 0 0.1125 0 0 0</pose><geometry><box><size>0.15 0.12 0.225</size></box></geometry></collision>
       <visual name="support"><pose>0 0 0.1125 0 0 0</pose><geometry><box><size>0.15 0.12 0.225</size></box></geometry><material><ambient>0.18 0.20 0.23 1</ambient><diffuse>0.18 0.20 0.23 1</diffuse></material></visual>
       <visual name="plate"><pose>0 0 0.2325 0 0 0</pose><geometry><box><size>0.15 0.12 0.015</size></box></geometry><material><ambient>0.55 0.57 0.60 1</ambient><diffuse>0.55 0.57 0.60 1</diffuse></material></visual>
-      <visual name="caliper_visual"><pose>0 0 0.247 0 0 0</pose><geometry><mesh><uri>model://robot_description/meshes/inspection/Caliper Body Halves.stl</uri><scale>0.001 0.001 0.001</scale></mesh></geometry><material><ambient>0.82 0.22 0.12 1</ambient><diffuse>0.82 0.22 0.12 1</diffuse></material></visual>
-      <collision name="inspection_volume"><pose>0 0 0.270 0 0 0</pose><geometry><box><size>0.10 0.06 0.05</size></box></geometry></collision>
     </link></model>
 
     <model name="station_2"><static>true</static><pose>2.20 -0.55 0 0 0 0</pose><link name="link">
       <collision name="support_collision"><pose>0 0 0.1125 0 0 0</pose><geometry><box><size>0.15 0.12 0.225</size></box></geometry></collision>
       <visual name="support"><pose>0 0 0.1125 0 0 0</pose><geometry><box><size>0.15 0.12 0.225</size></box></geometry><material><ambient>0.18 0.20 0.23 1</ambient><diffuse>0.18 0.20 0.23 1</diffuse></material></visual>
       <visual name="plate"><pose>0 0 0.2325 0 0 0</pose><geometry><box><size>0.15 0.12 0.015</size></box></geometry><material><ambient>0.55 0.57 0.60 1</ambient><diffuse>0.55 0.57 0.60 1</diffuse></material></visual>
-      <visual name="brake_arms_visual"><pose>0 0 0.245 0 0 0</pose><geometry><mesh><uri>model://robot_description/meshes/inspection/Brake Arms.stl</uri><scale>0.001 0.001 0.001</scale></mesh></geometry><material><ambient>0.20 0.65 0.32 1</ambient><diffuse>0.20 0.65 0.32 1</diffuse></material></visual>
-      <collision name="inspection_volume"><pose>0 0 0.270 0 0 0</pose><geometry><box><size>0.10 0.08 0.05</size></box></geometry></collision>
+    </link></model>
+
+    <!-- Una sola pieza por estación. Las mallas correctas inician centradas
+         y las variantes se reemplazan desde el panel, sin superponerse. -->
+    <model name="inspection_station_1_piece"><static>true</static><pose>1.20 0.55 0.240 0 0 0</pose><link name="link">
+      <collision name="inspection_collision"><pose>0 0 0.0085 0 0 0</pose><geometry><box><size>0.115172 0.099872 0.017</size></box></geometry></collision>
+      <visual name="inspection_visual"><pose>0.007586 0 0.0075 0 0 0</pose><geometry><mesh><uri>model://robot_description/meshes/inspection/versions/DiscoCorrectoC1.STL</uri><scale>0.001 0.001 0.001</scale></mesh></geometry><material><ambient>0.52 0.56 0.60 1</ambient><diffuse>0.52 0.56 0.60 1</diffuse></material></visual>
+    </link></model>
+    <model name="inspection_station_2_piece"><static>true</static><pose>2.20 -0.55 0.240 0 0 0</pose><link name="link">
+      <collision name="inspection_collision"><pose>0 0 0.0135 0 0 0</pose><geometry><box><size>0.134743 0.099872 0.027</size></box></geometry></collision>
+      <visual name="inspection_visual"><pose>0.0173715 0 0.0125 0 0 0</pose><geometry><mesh><uri>model://robot_description/meshes/inspection/versions/DiscoCorrectoC2.STL</uri><scale>0.001 0.001 0.001</scale></mesh></geometry><material><ambient>0.52 0.56 0.60 1</ambient><diffuse>0.52 0.56 0.60 1</diffuse></material></visual>
     </link></model>
 
     <!-- Banda decorativa en Z. Los tramos rectos llegan a las caras laterales

@@ -46,6 +46,28 @@
     </collision>
   </link>
 
+  <!-- La C920 ya está representada dentro de la malla CAD del chasis. Este
+       enlace sólo coloca su sensor virtual, sin una segunda carcasa delante. -->
+  <link name="base_camera_link" />
+  <joint name="base_camera_mount_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="base_camera_link" />
+    <!-- Centro óptico sobre la C920 modelada en el chasis, detrás del borde
+         frontal que tapaba la vista anterior. -->
+    <origin xyz="0.035 0 0.115" rpy="0 0 0" />
+  </joint>
+  <gazebo reference="base_camera_link">
+    <sensor name="base_camera" type="camera">
+      <always_on>true</always_on><visualize>true</visualize><update_rate>10</update_rate>
+      <topic>/assemblyscout/base/camera/image</topic>
+      <camera>
+        <horizontal_fov>1.0471975512</horizontal_fov>
+        <image><width>1280</width><height>720</height><format>R8G8B8</format></image>
+        <clip><near>0.05</near><far>5.0</far></clip>
+      </camera>
+    </sensor>
+  </gazebo>
+
   <link name="wheel_left_link">
     <inertial>
       <origin xyz="0.0000001 -0.0001772 0.0000031" rpy="0 0 0" />
@@ -200,6 +222,27 @@
     <dynamics damping="0.5" friction="0.05" />
   </joint>
 
+  <!-- Cámara virtual montada sobre el mismo conjunto visual de la Yuju.
+       Su posición óptica se ajustará en simulación antes de usarla para
+       inspección automática. -->
+  <link name="inspection_camera_optical_link" />
+  <joint name="inspection_camera_mount_joint" type="fixed">
+    <parent link="forearm_camera_link" />
+    <child link="inspection_camera_optical_link" />
+    <origin xyz="0.1202176 0.0242732 0.1313684" rpy="0 0 0" />
+  </joint>
+  <gazebo reference="inspection_camera_optical_link">
+    <sensor name="inspection_camera" type="camera">
+      <always_on>true</always_on><visualize>true</visualize><update_rate>10</update_rate>
+      <topic>/assemblyscout/arm/camera/image</topic>
+      <camera>
+        <horizontal_fov>1.0471975512</horizontal_fov>
+        <image><width>1280</width><height>720</height><format>R8G8B8</format></image>
+        <clip><near>0.05</near><far>2.0</far></clip>
+      </camera>
+    </sensor>
+  </gazebo>
+
 
   <!-- VL53L1X central: centro CAD (0.55, 75.50, -98.20) mm convertido
        al marco ROS: (0.09820, -0.00055, 0.07550) m. Es un gpu_lidar de
@@ -308,7 +351,9 @@
     </plugin>
     <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
       <joint_name>elbow_joint</joint_name><topic>/assemblyscout/arm/elbow_position</topic>
-      <p_gain>25</p_gain><d_gain>3</d_gain><cmd_max>0.8</cmd_max><cmd_min>-0.8</cmd_min>
+      <!-- Más par solo en el codo: conserva la respuesta dinámica del brazo
+           durante el frenado de la base, pero vence su propia inercia. -->
+      <p_gain>40</p_gain><d_gain>5</d_gain><cmd_max>2.0</cmd_max><cmd_min>-2.0</cmd_min>
     </plugin>
   </gazebo>
 </robot>

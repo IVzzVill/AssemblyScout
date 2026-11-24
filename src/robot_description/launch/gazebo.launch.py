@@ -30,6 +30,16 @@ def generate_launch_description():
         'GZ_GUI_PLUGIN_PATH', str(package.parent.parent / 'lib')
     )
 
+    # Gazebo puede conservar un servidor si una ventana se cerró fuera del
+    # lanzamiento. Antes de arrancar una demostración, termina únicamente las
+    # instancias "gz sim" previas y da un instante al sistema para liberarlas.
+    # Así el mundo siempre parte del SDF base, sin cajas ni poses de una sesión
+    # anterior.
+    close_previous_simulation = ExecuteProcess(
+        cmd=['bash', '-c', "pkill -f '[g]z sim' || true"],
+        output='screen',
+    )
+
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             str(ros_gz_sim / 'launch' / 'gz_sim.launch.py')
@@ -158,6 +168,22 @@ def generate_launch_description():
         ],
     )
 
+    start_fresh_simulation = TimerAction(
+        period=1.0,
+        actions=[
+            gazebo,
+            robot_state_publisher,
+            spawn_robot,
+            bridge,
+            joystick,
+            teleop,
+            safety_gate,
+            rviz,
+            window_arranger,
+            hold_arm_pose,
+        ],
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_joystick',
@@ -176,14 +202,6 @@ def generate_launch_description():
         ),
         gazebo_resources,
         gazebo_gui_plugins,
-        gazebo,
-        robot_state_publisher,
-        spawn_robot,
-        bridge,
-        joystick,
-        teleop,
-        safety_gate,
-        rviz,
-        window_arranger,
-        hold_arm_pose,
+        close_previous_simulation,
+        start_fresh_simulation,
     ])
