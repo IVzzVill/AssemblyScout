@@ -59,7 +59,7 @@ aproximaciones de simulación y se validarán con el asesor y el montaje físico
 
 ### Pendiente
 
-- Validar con el asesor las tres posturas: reposo, Estación 1 y Estación 2.
+- Validar las tres posturas: reposo, Estación 1 y Estación 2.
 - Integrar el ensamble CAD definitivo y ajustar su posición en cada estación.
 - Guardar una captura por estación con fecha y analizar si la pieza está
   conforme o presenta una anomalía visible.
